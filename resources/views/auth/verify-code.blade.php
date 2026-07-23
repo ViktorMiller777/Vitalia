@@ -18,17 +18,10 @@
         </div>
 
         <!-- Session Status Alert -->
-        @if (session('status') == 'verification-link-sent')
-            <div class="mb-6 font-medium text-sm text-[#4EBA87] bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center">
-                Se ha enviado un nuevo código de verificación a tu correo electrónico.
-            </div>
-        @else
-            <x-auth-session-status class="mb-6" :status="session('status')" />
-        @endif
+        <x-auth-session-status class="mb-6" :status="session('status')" />
 
         <!-- Verification Code Form -->
-        <form method="POST" action="{{ route('verification.send') }}" class="space-y-6">
-            @csrf
+        <form method="GET" action="{{ route('password.reset', ['token' => 'verified-code']) }}" class="space-y-6">
 
             <!-- Código -->
             <div>
@@ -58,21 +51,11 @@
             </div>
         </form>
 
-        <!-- Reenviar código & Logout -->
-        <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <form method="POST" action="{{ route('verification.send') }}">
-                @csrf
-                <button type="submit" class="text-sm font-semibold text-slate-600 hover:text-[#0C3B5E] transition-colors duration-200 focus:outline-none focus:underline border-none bg-transparent cursor-pointer p-0">
-                    Reenviar código
-                </button>
-            </form>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="text-xs font-medium text-slate-400 hover:text-slate-600 transition-colors duration-200 focus:outline-none focus:underline">
-                    Cerrar sesión
-                </button>
-            </form>
+        <!-- Reenviar código Link -->
+        <div class="mt-6 text-center sm:text-left">
+            <a href="{{ route('password.request') }}" class="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-[#0C3B5E] transition-colors duration-200 focus:outline-none focus:underline">
+                Reenviar código
+            </a>
         </div>
     </div>
 </x-guest-layout>
