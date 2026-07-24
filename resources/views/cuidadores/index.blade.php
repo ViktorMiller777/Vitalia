@@ -11,10 +11,10 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-[#0C3B5E] tracking-tight">
-                        Lista de Internos
+                        Lista de Cuidadores
                     </h1>
                     <p class="text-slate-500 text-sm mt-1">
-                        Administración de internos registrados
+                        Administración de cuidadores registrados
                     </p>
                 </div>
             </div>
@@ -53,13 +53,12 @@
                         Ordenar
                     </button>
 
-                    <!-- Botón Agregar interno -->
-                    <!-- Botón Agregar interno (Convertido a enlace) -->
-                    <a href="{{ route('internos.create') }}" class="w-full md:w-auto inline-flex items-center justify-center px-5 py-2.5 bg-[#4EBA87] hover:bg-emerald-600 active:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg shadow-[#4EBA87]/20 transition duration-150 cursor-pointer">
+                    <!-- Botón Agregar Cuidador -->
+                    <a href="{{ route('cuidadores.create') }}" class="w-full md:w-auto inline-flex items-center justify-center px-5 py-2.5 bg-[#4EBA87] hover:bg-emerald-600 active:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg shadow-[#4EBA87]/20 transition duration-150 cursor-pointer">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
-                        Agregar interno
+                        Agregar cuidador
                     </a>
                 </div>
             </div>
@@ -71,7 +70,10 @@
                         <thead>
                             <tr class="bg-slate-50/80 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider">
                                 <th class="py-4 px-6">Nombre</th>
-                                <th class="py-4 px-6">Edad</th>
+                                <th class="py-4 px-6">Apellido</th>
+                                <th class="py-4 px-6">Correo</th>
+                                <th class="py-4 px-6">Telefono</th>
+                                <th class="py-4 px-6">Usuario</th>
                                 <th class="py-4 px-6">Estado</th>
                                 <th class="py-4 px-6 text-right">Acciones</th>
                             </tr>
@@ -84,14 +86,32 @@
                                     <div class="w-9 h-9 rounded-full bg-[#0C3B5E] text-white flex items-center justify-center font-bold text-xs">
                                         JP
                                     </div>
-                                    <span>Juan Pérez</span>
+                                    <span>Juan</span>
                                 </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">78 años</td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">Perez</td>
                                 <td class="py-4 px-6">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
+                                        Perez@gmail.com
                                     </span>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        87
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        Cuidador1
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                                            Activo
+                                        </span>
+                                    </button>
                                 </td>
                                 <td class="py-4 px-6 text-right space-x-2">
                                     <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
@@ -106,14 +126,32 @@
                                     <div class="w-9 h-9 rounded-full bg-[#4EBA87] text-white flex items-center justify-center font-bold text-xs">
                                         ML
                                     </div>
-                                    <span>María López</span>
+                                    <span>María</span>
                                 </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">82 años</td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">Lopez</td>
                                 <td class="py-4 px-6">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
-                                        En observación
+                                        lopez@gmail.com
                                     </span>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        87
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        Cuidador1
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                                            Activo
+                                        </span>
+                                    </button>
                                 </td>
                                 <td class="py-4 px-6 text-right space-x-2">
                                     <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
@@ -128,14 +166,32 @@
                                     <div class="w-9 h-9 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-xs">
                                         CR
                                     </div>
-                                    <span>Carlos Ruiz</span>
+                                    <span>Carlos</span>
                                 </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">74 años</td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">Ruiz</td>
                                 <td class="py-4 px-6">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
+                                        ruiz@gmail.com
                                     </span>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        8713578221
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        Cuidador1
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                                            Activo
+                                        </span>
+                                    </button>
                                 </td>
                                 <td class="py-4 px-6 text-right space-x-2">
                                     <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
@@ -150,14 +206,32 @@
                                     <div class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
                                         AG
                                     </div>
-                                    <span>Ana Gómez</span>
+                                    <span>Ana</span>
                                 </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">80 años</td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">Gomez</td>
                                 <td class="py-4 px-6">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
                                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>
-                                        Atención especial
+                                        gomez@gmail.com
                                     </span>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        8713578221
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        Cuidador1
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                                            Activo
+                                        </span>
+                                    </button>
                                 </td>
                                 <td class="py-4 px-6 text-right space-x-2">
                                     <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
@@ -165,29 +239,6 @@
                                     </button>
                                 </td>
                             </tr>
-
-                            <!-- Fila 5 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
-                                        RS
-                                    </div>
-                                    <span>Roberto Sánchez</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">76 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
                         </tbody>
                     </table>
                 </div>

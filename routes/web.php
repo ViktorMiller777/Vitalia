@@ -15,6 +15,22 @@ Route::get('/internos', function () {
     return view('internos.index');
 })->name('internos.index');
 
+Route::get('/agregar-internos', function () {
+    return view('internos.agregar_interno'); 
+})->name('internos.create');
+
+Route::get('/agregar-cuidador',function(){
+    return view('cuidadores.agregar_cuidador');
+})->name('cuidadores.create');
+
+Route::get('/cuidadores',function(){
+    return view('cuidadores.index');
+})->name('cuidadores.index');
+
+Route::get('/familiares',function(){
+    return view('familiar.index');
+})->name('familiares.index');
+
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');

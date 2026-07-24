@@ -11,10 +11,10 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-[#0C3B5E] tracking-tight">
-                        Lista de Internos
+                        Lista de Familiares
                     </h1>
                     <p class="text-slate-500 text-sm mt-1">
-                        Administración de internos registrados
+                        Administración de familiares registrados
                     </p>
                 </div>
             </div>
@@ -54,12 +54,11 @@
                     </button>
 
                     <!-- Botón Agregar interno -->
-                    <!-- Botón Agregar interno (Convertido a enlace) -->
                     <a href="{{ route('internos.create') }}" class="w-full md:w-auto inline-flex items-center justify-center px-5 py-2.5 bg-[#4EBA87] hover:bg-emerald-600 active:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg shadow-[#4EBA87]/20 transition duration-150 cursor-pointer">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
-                        Agregar interno
+                        Agregar familiar
                     </a>
                 </div>
             </div>
@@ -71,7 +70,10 @@
                         <thead>
                             <tr class="bg-slate-50/80 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider">
                                 <th class="py-4 px-6">Nombre</th>
-                                <th class="py-4 px-6">Edad</th>
+                                <th class="py-4 px-6">Correo</th>
+                                <th class="py-4 px-6">Teléfono</th>
+                                <th class="py-4 px-6">Interno</th>
+                                <th class="py-4 px-6">Parentesco</th>
                                 <th class="py-4 px-6">Estado</th>
                                 <th class="py-4 px-6 text-right">Acciones</th>
                             </tr>
@@ -86,18 +88,26 @@
                                     </div>
                                     <span>Juan Pérez</span>
                                 </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">78 años</td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">perez@gmail.com</td>
                                 <td class="py-4 px-6">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
+                                        8713578221
                                     </span>
                                 </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        Bolillo 
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">Hijo</td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">Vivo</td>
                                 <td class="py-4 px-6 text-right space-x-2">
                                     <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
                                         Ver / Editar
                                     </button>
                                 </td>
+                                
                             </tr>
 
                             <!-- Fila 2 -->
@@ -108,86 +118,26 @@
                                     </div>
                                     <span>María López</span>
                                 </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">82 años</td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">lopez@gmail.com</td>
                                 <td class="py-4 px-6">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
-                                        En observación
+                                        8714362178
                                     </span>
                                 </td>
+                                <td class="py-4 px-6 text-right space-x-2">
+                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                        Memin
+                                    </button>
+                                </td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">Hijo</td>
+                                <td class="py-4 px-6 text-slate-600 font-medium">Vivo</td>
                                 <td class="py-4 px-6 text-right space-x-2">
                                     <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
                                         Ver / Editar
                                     </button>
                                 </td>
                             </tr>
-
-                            <!-- Fila 3 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-xs">
-                                        CR
-                                    </div>
-                                    <span>Carlos Ruiz</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">74 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 4 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
-                                        AG
-                                    </div>
-                                    <span>Ana Gómez</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">80 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>
-                                        Atención especial
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 5 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
-                                        RS
-                                    </div>
-                                    <span>Roberto Sánchez</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">76 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
                         </tbody>
                     </table>
                 </div>
