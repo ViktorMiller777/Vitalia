@@ -31,6 +31,22 @@ Route::get('/familiares',function(){
     return view('familiar.index');
 })->name('familiares.index');
 
+Route::get('/incidencias',function(){
+    return view('incidencias.index');
+})->name('incidencias.index');
+
+Route::get('/alertas',function(){
+    return view('alertas.index');
+})->name('alertas.index');
+
+Route::get('/detalle-interno',function(){
+    return view('internos.detalle_interno');
+})->name('internos.detalle_interno');
+
+Route::get('/editar-interno',function(){
+    return view('internos.editar_interno');
+})->name('internos.editar_interno');
+
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');

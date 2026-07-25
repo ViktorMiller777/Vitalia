@@ -1,3 +1,28 @@
+<style>
+    .button-blue {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.625rem 1.25rem;
+        background-color: #355C7D;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(59,130,246,0.2), 0 2px 4px -2px rgba(59,130,246,0.2);
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
+        cursor: pointer;
+        text-decoration: none;
+        width: auto;
+    }
+    .button-blue:hover {
+        background-color: #2563EB;
+        box-shadow: 0 10px 15px -3px rgba(59,130,246,0.25), 0 4px 6px -4px rgba(59,130,246,0.25);
+    }
+    .button-blue:active {
+        background-color: #1D4ED8;
+    }
+</style>
 <x-app-layout>
     <div class="min-h-screen bg-slate-50 flex flex-col md:flex-row">
         
@@ -53,9 +78,9 @@
                         Ordenar
                     </button>
 
-                    <!-- Botón Agregar interno -->
-                    <a href="{{ route('internos.create') }}" class="w-full md:w-auto inline-flex items-center justify-center px-5 py-2.5 bg-[#4EBA87] hover:bg-emerald-600 active:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg shadow-[#4EBA87]/20 transition duration-150 cursor-pointer">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Botón Agregar familiar -->
+                    <a href="" class="button-blue">
+                        <svg style="width:1rem;height:1rem;margin-right:0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
                         Agregar familiar
