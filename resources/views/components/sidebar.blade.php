@@ -26,16 +26,6 @@
                 </a>
             </div>
             
-            <!-- Cuidadores -->
-            <div class="item-side-bar">
-                <a href="{{ route('cuidadores.index')}}" class="flex items-center px-4 py-3 text-slate-600 rounded-xl font-semibold text-sm">
-                    <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                    </svg>
-                    Cuidadores
-                </a>
-            </div>
-           
             <!-- Internos  -->
             <div class="item-side-bar">
                 <a href="{{ route('internos.index') }}" class="flex items-center px-4 py-3 text-slate-600 rounded-xl font-semibold text-sm">
@@ -46,7 +36,16 @@
                 </a>
             </div>
             
-            
+            <!-- Cuidadores -->
+            <div class="item-side-bar">
+                <a href="{{ route('cuidadores.index')}}" class="flex items-center px-4 py-3 text-slate-600 rounded-xl font-semibold text-sm">
+                    <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    Cuidadores
+                </a>
+            </div>
+           
             <!-- Familiares -->
             <div class="item-side-bar">
                 <a href="{{ route('familiares.index')}}" class="flex items-center px-4 py-3 text-slate-600 rounded-xl font-semibold text-sm">
@@ -60,7 +59,7 @@
 
             <!-- Incidencias -->
             <div class="item-side-bar">
-                <a href="#" class="flex items-center px-4 py-3 text-slate-600 rounded-xl font-semibold text-sm">
+                <a href="{{route('incidencias.index')}}" class="flex items-center px-4 py-3 text-slate-600 rounded-xl font-semibold text-sm">
                     <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                     </svg>
@@ -70,7 +69,7 @@
 
             <!-- Alertas -->
             <div class="item-side-bar">
-                <a href="#" class="flex items-center px-4 py-3 text-slate-600 rounded-xl font-semibold text-sm">
+                <a href="{{route('alertas.index')}}" class="flex items-center px-4 py-3 text-slate-600 rounded-xl font-semibold text-sm">
                     <svg class="w-5 h-5 mr-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                     </svg>
