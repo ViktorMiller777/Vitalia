@@ -35,4 +35,6 @@ return [
         ],
     ],
 
+    'device_keys' => array_filter(explode(',', (string) env('DEVICE_API_KEYS', ''))),
+
 ];
