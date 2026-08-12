@@ -38,14 +38,8 @@ class PasswordResetLinkController extends Controller
         );
 
         return $status == Password::RESET_LINK_SENT
-<<<<<<< HEAD
-                    ? redirect()->route('password.verify-code')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
-=======
                     ? back()->with('status', __($status))
                     : back()->withInput($request->only('correo'))
                         ->withErrors(['correo' => __($status)]);
->>>>>>> origin/alan_backend
     }
 }

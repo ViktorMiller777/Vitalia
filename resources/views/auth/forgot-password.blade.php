@@ -26,20 +26,20 @@
 
             <!-- Correo electrónico -->
             <div>
-                <label for="email" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                <label for="correo" class="block text-sm font-semibold text-slate-700 mb-1.5">
                     Correo electrónico
                 </label>
                 <input 
-                    id="email" 
+                    id="correo" 
                     type="email" 
-                    name="email" 
-                    value="{{ old('email') }}" 
+                    name="correo" 
+                    value="{{ old('correo') }}" 
                     required 
                     autofocus 
-                    placeholder="Campo de texto" 
-                    class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm transition duration-200 focus:bg-white focus:outline-none focus:border-[#4EBA87] focus:ring-4 focus:ring-[#4EBA87]/15 @error('email') border-red-500 @enderror"
+                    placeholder="correo@ejemplo.com" 
+                    class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm transition duration-200 focus:bg-white focus:outline-none focus:border-[#4EBA87] focus:ring-4 focus:ring-[#4EBA87]/15 @error('correo') border-red-500 @enderror"
                 />
-                <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs text-red-500" />
+                <x-input-error :messages="$errors->get('correo')" class="mt-2 text-xs text-red-500" />
             </div>
 
             <!-- Submit Button (Enviar código) -->
@@ -48,7 +48,7 @@
                     type="submit" 
                     class="w-full py-3.5 px-4 bg-[#0C3B5E] hover:bg-[#082942] active:bg-[#051C2E] text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg shadow-[#0C3B5E]/20 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#0C3B5E]/30"
                 >
-                    Enviar código
+                    Enviar enlace
                 </button>
             </div>
         </form>
@@ -63,24 +63,4 @@
             </a>
         </div>
     </div>
-
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="correo" :value="__('Email')" />
-            <x-text-input id="correo" class="block mt-1 w-full" type="email" name="correo" :value="old('correo')" required autofocus />
-            <x-input-error :messages="$errors->get('correo')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
 </x-guest-layout>

@@ -17,8 +17,21 @@ class StoreResidentRequest extends ApiFormRequest
             'apellido_paterno' => ['required', 'string', 'max:50'],
             'apellido_materno' => ['required', 'string', 'max:50'],
             'fecha_nacimiento' => ['required', 'date'],
-            'sexo' => ['required', Rule::in(['M', 'F'])],
+            'sexo' => ['required', Rule::in(['M', 'F', 'Masculino', 'Femenino', 'Otro'])],
             'fecha_ingreso' => ['nullable', 'date'],
+            'estado' => ['nullable', 'string', 'max:50'],
+
+            // Historial clínico
+            'tipo_sangre' => ['nullable', 'string', Rule::in(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])],
+            'peso' => ['nullable', 'numeric', 'min:0'],
+            'estatura' => ['nullable', 'numeric', 'min:0'],
+            'alergias' => ['nullable', 'string'],
+            'padecimientos' => ['nullable', 'string'],
+            'antecedentes_medicos' => ['nullable', 'string'],
+            'enfermedades_cronicas' => ['nullable', 'string'],
+            'cirugias_previas' => ['nullable', 'string'],
+            'observaciones_generales' => ['nullable', 'string'],
+            'observaciones' => ['nullable', 'string'],
         ];
     }
 
@@ -29,12 +42,18 @@ class StoreResidentRequest extends ApiFormRequest
 
     protected function afterValidation(Validator $validator): void
     {
-        if (Carbon::parse($this->input('fecha_nacimiento'))->age <= 60) {
-            throw new ApiException('INT-1006', 'El interno debe ser mayor de 60 años', 422);
+        if ($this->filled('fecha_nacimiento') && Carbon::parse($this->input('fecha_nacimiento'))->age < 60) {
+            if ($this->expectsJson() || $this->is('api/*')) {
+                throw new ApiException('INT-1006', 'El interno debe ser mayor de 60 años', 422);
+            }
+            $validator->errors()->add('fecha_nacimiento', 'El interno debe ser mayor de 60 años');
         }
 
         if ($this->filled('fecha_ingreso') && Carbon::parse($this->input('fecha_ingreso'))->startOfDay()->gt(Carbon::today())) {
-            throw new ApiException('INT-1007', 'La fecha de ingreso no puede ser una fecha futura', 422);
+            if ($this->expectsJson() || $this->is('api/*')) {
+                throw new ApiException('INT-1007', 'La fecha de ingreso no puede ser una fecha futura', 422);
+            }
+            $validator->errors()->add('fecha_ingreso', 'La fecha de ingreso no puede ser una fecha futura');
         }
     }
 

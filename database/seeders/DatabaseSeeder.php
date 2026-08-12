@@ -6,6 +6,7 @@ use App\Models\Rol;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,6 +28,7 @@ class DatabaseSeeder extends Seeder
             'correo' => 'admin@vitalia.com',
             'telefono' => '+52 5512345678',
             'usuario' => 'admin.vitalia',
+            'password' => Hash::make('123456789'),
             'rol_id' => Rol::where('nombre', 'Administrador')->value('id'),
             'estado' => 'active',
         ]);

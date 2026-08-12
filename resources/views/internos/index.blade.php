@@ -44,8 +44,14 @@
                 </div>
             </div>
 
+            @if (session('success'))
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-sm font-semibold shadow-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <!-- TOOLBAR: BUSQUEDA, FILTRO, ORDENAR Y AGREGAR INTERNO -->
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+            <form method="GET" action="{{ route('internos.index') }}" class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-3">
                     
                     <!-- Campo Buscar interno -->
@@ -57,26 +63,30 @@
                         </div>
                         <input 
                             type="text" 
+                            name="buscar"
+                            value="{{ request('buscar') }}"
                             placeholder="Buscar interno..." 
                             class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:bg-white focus:border-[#4EBA87] focus:ring-4 focus:ring-[#4EBA87]/15 transition duration-200"
                         />
                     </div>
 
-                    <!-- Botón Filtro -->
-                    <button class="w-full md:w-auto inline-flex items-center justify-center px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-sm rounded-xl transition duration-150 cursor-pointer">
-                        <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.447.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"></path>
-                        </svg>
-                        Filtro
+                    <!-- Filtro Estado -->
+                    <select name="estado" class="w-full md:w-auto px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-sm rounded-xl transition duration-150 cursor-pointer">
+                        <option value="">Todos los estados</option>
+                        <option value="Estable" {{ request('estado') == 'Estable' ? 'selected' : '' }}>Estable</option>
+                        <option value="En observación" {{ request('estado') == 'En observación' ? 'selected' : '' }}>En observación</option>
+                        <option value="Atención especial" {{ request('estado') == 'Atención especial' ? 'selected' : '' }}>Atención especial</option>
+                    </select>
+
+                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-4 py-2.5 bg-[#0C3B5E] text-white font-semibold text-sm rounded-xl transition duration-150 cursor-pointer hover:bg-[#082942]">
+                        Buscar
                     </button>
 
-                    <!-- Botón Ordenar -->
-                    <button class="w-full md:w-auto inline-flex items-center justify-center px-4 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-sm rounded-xl transition duration-150 cursor-pointer">
-                        <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
-                        </svg>
-                        Ordenar
-                    </button>
+                    @if(request('buscar') || request('estado'))
+                        <a href="{{ route('internos.index') }}" class="w-full md:w-auto inline-flex items-center justify-center px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-sm rounded-xl transition duration-150">
+                            Limpiar
+                        </a>
+                    @endif
 
                     <!-- Botón Agregar interno -->
                     <a href="{{ route('internos.create') }}" class="button-blue">
@@ -86,7 +96,7 @@
                         Agregar interno
                     </a>
                 </div>
-            </div>
+            </form>
 
             <!-- TABLA DE INTERNOS -->
             <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm">
@@ -101,117 +111,49 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-sm">
-                            
-                            <!-- Fila 1 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-[#0C3B5E] text-white flex items-center justify-center font-bold text-xs">
-                                        JP
-                                    </div>
-                                    <span>Juan Pérez</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">78 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 2 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-[#4EBA87] text-white flex items-center justify-center font-bold text-xs">
-                                        ML
-                                    </div>
-                                    <span>María López</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">82 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
-                                        En observación
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 3 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-xs">
-                                        CR
-                                    </div>
-                                    <span>Carlos Ruiz</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">74 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 4 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">
-                                        AG
-                                    </div>
-                                    <span>Ana Gómez</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">80 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>
-                                        Atención especial
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 5 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
-                                        RS
-                                    </div>
-                                    <span>Roberto Sánchez</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600 font-medium">76 años</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Estable
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
-                                        Ver / Editar
-                                    </button>
-                                </td>
-                            </tr>
-
+                            @forelse ($internos as $interno)
+                                @php
+                                    $initials = strtoupper(substr($interno->nombre, 0, 1) . substr($interno->apellido_paterno, 0, 1));
+                                    $badgeClass = match($interno->estado) {
+                                        'En observación' => 'bg-amber-50 text-amber-700 border-amber-200',
+                                        'Atención especial' => 'bg-rose-50 text-rose-700 border-rose-200',
+                                        default => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                    };
+                                    $dotClass = match($interno->estado) {
+                                        'En observación' => 'bg-amber-500',
+                                        'Atención especial' => 'bg-rose-500',
+                                        default => 'bg-emerald-500',
+                                    };
+                                @endphp
+                                <tr class="hover:bg-slate-50/60 transition duration-150">
+                                    <td class="py-4 px-6 font-bold text-slate-800 flex items-center space-x-3">
+                                        <div class="w-9 h-9 rounded-full bg-[#0C3B5E] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                                            {{ $initials }}
+                                        </div>
+                                        <span>{{ $interno->nombre }} {{ $interno->apellido_paterno }} {{ $interno->apellido_materno }}</span>
+                                    </td>
+                                    <td class="py-4 px-6 text-slate-600 font-medium">
+                                        {{ $interno->fecha_nacimiento ? $interno->fecha_nacimiento->age . ' años' : 'N/A' }}
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $badgeClass }} border">
+                                            <span class="w-1.5 h-1.5 rounded-full {{ $dotClass }} mr-1.5"></span>
+                                            {{ $interno->estado ?? 'Estable' }}
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-6 text-right space-x-2">
+                                        <a href="{{ route('internos.detalle_interno', ['id' => $interno->id]) }}" class="inline-block px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">
+                                            Ver / Editar
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="py-8 text-center text-slate-500 font-medium">
+                                        No se encontraron internos registrados.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -219,24 +161,10 @@
                 <!-- PAGINACIÓN -->
                 <div class="bg-slate-50/80 px-6 py-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p class="text-xs font-medium text-slate-500">
-                        Mostrando <span class="font-bold text-slate-700">1</span> a <span class="font-bold text-slate-700">5</span> de <span class="font-bold text-slate-700">12</span> internos
+                        Mostrando <span class="font-bold text-slate-700">{{ $internos->firstItem() ?? 0 }}</span> a <span class="font-bold text-slate-700">{{ $internos->lastItem() ?? 0 }}</span> de <span class="font-bold text-slate-700">{{ $internos->total() }}</span> internos
                     </p>
-                    <div class="flex items-center space-x-1">
-                        <button class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-500 text-xs font-semibold hover:bg-slate-50 disabled:opacity-50">
-                            Anterior
-                        </button>
-                        <button class="px-3 py-1.5 bg-[#0C3B5E] text-white rounded-lg text-xs font-bold shadow-sm">
-                            1
-                        </button>
-                        <button class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-600 text-xs font-semibold hover:bg-slate-50">
-                            2
-                        </button>
-                        <button class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-600 text-xs font-semibold hover:bg-slate-50">
-                            3
-                        </button>
-                        <button class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-600 text-xs font-semibold hover:bg-slate-50">
-                            Siguiente
-                        </button>
+                    <div>
+                        {{ $internos->links() }}
                     </div>
                 </div>
 

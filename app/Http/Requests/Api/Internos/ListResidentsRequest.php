@@ -10,7 +10,9 @@ class ListResidentsRequest extends ListRequest
     protected function filterRules(): array
     {
         return [
-            'estado' => ['sometimes', Rule::in(['active', 'inactive'])],
+            'estado' => ['sometimes', 'nullable', 'string', 'max:50'],
+            'buscar' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'search' => ['sometimes', 'nullable', 'string', 'max:100'],
         ];
     }
 }

@@ -30,7 +30,7 @@
                 <div class="flex items-center space-x-2 text-xs sm:text-sm font-semibold text-slate-800 bg-slate-100/80 px-3 py-1.5 rounded-xl border border-slate-200">
                     <span class="inline-block w-2 h-2 rounded-full bg-[#4EBA87]"></span>
                     <span class="text-slate-500 font-normal">Admin:</span>
-                    <span class="text-[#0C3B5E] font-bold">{{ Auth::user()->name ?? 'Juan Pérez' }}</span>
+                    <span class="text-[#0C3B5E] font-bold">{{ Auth::user()->nombre }} {{ Auth::user()->apellido_paterno }}</span>
                 </div>
 
                 <!-- Configuración Dropdown -->
@@ -43,7 +43,6 @@
                             </svg>
                             <div>Configuración</div>
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->usuario }}</div>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -89,18 +88,6 @@
             <span>Admin: {{ Auth::user()->name ?? 'Juan Pérez' }}</span>
             <span class="bg-amber-100 text-amber-800 text-xs px-2 py-0.5 rounded-full font-bold">3 Notificaciones</span>
         </div>
-<<<<<<< HEAD
-        <div class="pt-2 border-t border-slate-200 space-y-1">
-            <x-responsive-nav-link :href="route('profile.edit')">
-                {{ __('Configuración / Perfil') }}
-            </x-responsive-nav-link>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <x-responsive-nav-link :href="route('logout')"
-                        onclick="event.preventDefault();
-                                    this.closest('form').submit();">
-                    {{ __('Cerrar sesión') }}
-=======
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
@@ -112,7 +99,6 @@
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
->>>>>>> origin/alan_backend
                 </x-responsive-nav-link>
             </form>
         </div>

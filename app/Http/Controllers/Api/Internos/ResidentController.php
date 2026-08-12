@@ -9,33 +9,92 @@ use App\Http\Requests\Api\Internos\StoreResidentRequest;
 use App\Http\Requests\Api\Internos\UpdateResidentRequest;
 use App\Http\Resources\ResidentResource;
 use App\Models\Resident;
+use App\Models\User;
+use App\Models\Incident;
 use App\Support\ApiResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 
 class ResidentController extends Controller
 {
-    public function store(StoreResidentRequest $request): JsonResponse
+
+    public function count()
     {
+        return view('dashboard', [
+            'internosActivos' => Resident::where('estado', 'Estable')->count(),
+            'usuariosTotales' => User::where('estado', 'active')->count(),
+            'incidenciasPendientes' => Incident::where('estado', 'pendiente')->count(),
+        ]);
+    }
+    
+    public function store(StoreResidentRequest $request): JsonResponse|RedirectResponse
+    {
+        $rawSexo = $request->input('sexo');
+        $sexo = match ($rawSexo) {
+            'Masculino' => 'M',
+            'Femenino' => 'F',
+            default => $rawSexo,
+        };
+
         $resident = Resident::create([
             'nombre' => $request->input('nombre'),
             'apellido_paterno' => $request->input('apellido_paterno'),
             'apellido_materno' => $request->input('apellido_materno'),
             'fecha_nacimiento' => $request->input('fecha_nacimiento'),
-            'sexo' => $request->input('sexo'),
+            'sexo' => $sexo,
             'fecha_ingreso' => $request->fechaIngreso(),
-            'estado' => 'active',
+            'estado' => $request->input('estado', 'Estable'),
         ]);
 
-        return ApiResponse::success('INT-0001', 'Interno registrado correctamente', ['id' => $resident->id], 201);
+        $clinicalHistoryData = array_filter([
+            'tipo_sangre' => $request->input('tipo_sangre'),
+            'peso' => $request->input('peso'),
+            'estatura' => $request->input('estatura'),
+            'alergias' => $request->input('alergias'),
+            'padecimientos' => $request->input('padecimientos'),
+            'antecedentes_medicos' => $request->input('antecedentes_medicos'),
+            'enfermedades_cronicas' => $request->input('enfermedades_cronicas'),
+            'cirugias_previas' => $request->input('cirugias_previas'),
+            'observaciones' => $request->input('observaciones_generales') ?? $request->input('observaciones'),
+        ], fn ($val) => ! is_null($val) && $val !== '');
+
+        if (! empty($clinicalHistoryData)) {
+            $clinicalHistoryData['created_by'] = auth()->id();
+            $resident->clinicalHistory()->create($clinicalHistoryData);
+        }
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return ApiResponse::success('INT-0001', 'Interno registrado correctamente', ['id' => $resident->id], 201);
+        }
+
+        return redirect()->route('internos.index')->with('success', 'Interno registrado correctamente.');
     }
 
-    public function index(ListResidentsRequest $request): JsonResponse
+    public function index(ListResidentsRequest $request): JsonResponse|View
     {
-        $paginator = Resident::query()
-            ->when($request->filled('estado'), fn ($query) => $query->where('estado', $request->input('estado')))
-            ->paginate($request->perPage(), page: $request->page());
+        $search = $request->input('buscar') ?? $request->input('search');
+        $estado = $request->input('estado');
 
-        return ApiResponse::paginated('GEN-0001', 'Listado obtenido correctamente', $paginator, fn (Resident $resident) => new ResidentResource($resident));
+        $query = Resident::query()
+            ->when($search, function ($q, $search) {
+                $q->where(function ($sub) use ($search) {
+                    $sub->where('nombre', 'like', "%{$search}%")
+                        ->orWhere('apellido_paterno', 'like', "%{$search}%")
+                        ->orWhere('apellido_materno', 'like', "%{$search}%");
+                });
+            })
+            ->when($estado, fn ($q) => $q->where('estado', $estado))
+            ->orderBy('id', 'desc');
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            $paginator = $query->paginate($request->perPage(), page: $request->page());
+            return ApiResponse::paginated('GEN-0001', 'Listado obtenido correctamente', $paginator, fn (Resident $resident) => new ResidentResource($resident));
+        }
+
+        $internos = $query->paginate(5)->withQueryString();
+
+        return view('internos.index', compact('internos', 'search', 'estado'));
     }
 
     public function show(int $id): JsonResponse

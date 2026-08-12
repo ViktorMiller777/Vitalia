@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Internos\ResidentController;
+use App\Http\Controllers\Api\Usuarios\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,13 +15,13 @@ Route::get('/dashboard',function(){
 })->name('dashboard');
 
 //VISTAS DE INTERNOS(ADMIN)
-Route::get('/internos', function () {
-    return view('internos.index');
-})->name('internos.index');
+Route::get('/internos', [ResidentController::class, 'index'])->name('internos.index');
 
 Route::get('/agregar-internos', function () {
     return view('internos.agregar_interno'); 
 })->name('internos.create');
+
+Route::post('/agregar-internos', [ResidentController::class, 'store'])->name('internos.store');
 
 Route::get('/detalle-interno',function(){ //NOTA ESTA RUTA TENDRA EL PARAMETRO EL ID DEL INTERNO PARA MOSTRAR SUS DATOS
     return view('internos.detalle_interno');
@@ -75,8 +77,7 @@ Route::get('/alertas',function(){
 })->name('alertas.index');
 
 
-
-
+Route::get('/dashboard', [ResidentController::class, 'count'])->name('dashboard');
 
 
 

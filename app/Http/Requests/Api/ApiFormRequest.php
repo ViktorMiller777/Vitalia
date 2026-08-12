@@ -25,9 +25,13 @@ abstract class ApiFormRequest extends FormRequest
 
     protected function failedValidation(Validator $validator): never
     {
-        [$ref, $status, $msg] = $this->refForFailedValidation($validator);
+        if ($this->expectsJson() || $this->is('api/*')) {
+            [$ref, $status, $msg] = $this->refForFailedValidation($validator);
 
-        throw new ApiException($ref, $msg, $status, ['errors' => $validator->errors()]);
+            throw new ApiException($ref, $msg, $status, ['errors' => $validator->errors()]);
+        }
+
+        parent::failedValidation($validator);
     }
 
     /**

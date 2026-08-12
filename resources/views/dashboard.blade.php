@@ -15,7 +15,7 @@
                         </div>
                     </div>
                     <div class="mt-3 flex items-baseline">
-                        <span class="text-3xl font-extrabold text-[#0C3B5E] group-hover:text-[#4EBA87] transition-colors">12</span>
+                        <span class="text-3xl font-extrabold text-[#0C3B5E] group-hover:text-[#4EBA87] transition-colors">{{ $internosActivos }}</span>
                         <span class="ml-2 text-xs font-medium text-emerald-600 flex items-center">
                             <svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
                             Ver lista →
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="mt-3 flex items-baseline">
-                        <span class="text-3xl font-extrabold text-[#0C3B5E]">8</span>
+                        <span class="text-3xl font-extrabold text-[#0C3B5E]">{{ $usuariosTotales }}</span>
                         <span class="ml-2 text-xs font-medium text-slate-400">Personal & Admins</span>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     <div class="mt-3 flex items-baseline">
-                        <span class="text-3xl font-extrabold text-rose-600">5</span>
+                        <span class="text-3xl font-extrabold text-rose-600">{{ $incidenciasPendientes}}</span>
                         <span class="ml-2 text-xs font-semibold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full">Requieren atención</span>
                     </div>
                 </div>

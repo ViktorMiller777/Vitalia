@@ -14,6 +14,14 @@ use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
+    public function count(){
+        $personalCount = User::where('estado', 'active')->count();
+
+        return view('dashboard', [
+            'personalCount' => $personalCount,
+        ]); 
+    }
+
     public function store(StoreUserRequest $request): JsonResponse
     {
         $user = User::create([

@@ -26,21 +26,21 @@
 
             <!-- Correo electrónico -->
             <div>
-                <label for="email" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                <label for="correo" class="block text-sm font-semibold text-slate-700 mb-1.5">
                     Correo electrónico
                 </label>
                 <input 
-                    id="email" 
+                    id="correo" 
                     type="email" 
-                    name="email" 
-                    value="{{ old('email') }}" 
+                    name="correo" 
+                    value="{{ old('correo') }}" 
                     required 
                     autofocus 
                     autocomplete="username" 
-                    placeholder="Campo de texto" 
-                    class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm transition duration-200 focus:bg-white focus:outline-none focus:border-[#4EBA87] focus:ring-4 focus:ring-[#4EBA87]/15 @error('email') border-red-500 @enderror"
+                    placeholder="correo@ejemplo.com" 
+                    class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm transition duration-200 focus:bg-white focus:outline-none focus:border-[#4EBA87] focus:ring-4 focus:ring-[#4EBA87]/15 @error('correo') border-red-500 @enderror"
                 />
-                <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs text-red-500" />
+                <x-input-error :messages="$errors->get('correo')" class="mt-2 text-xs text-red-500" />
             </div>
 
             <!-- Contraseña -->
@@ -54,14 +54,24 @@
                     name="password" 
                     required 
                     autocomplete="current-password" 
-                    placeholder="Campo de contraseña" 
+                    placeholder="••••••••" 
                     class="w-full px-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm transition duration-200 focus:bg-white focus:outline-none focus:border-[#4EBA87] focus:ring-4 focus:ring-[#4EBA87]/15 @error('password') border-red-500 @enderror"
                 />
                 <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs text-red-500" />
             </div>
 
-            <!-- Forgot Password Link -->
-            <div class="flex items-center justify-end pt-1">
+            <!-- Forgot Password & Remember Me Link -->
+            <div class="flex items-center justify-between pt-1">
+                <label for="remember_me" class="inline-flex items-center cursor-pointer">
+                    <input 
+                        id="remember_me" 
+                        type="checkbox" 
+                        class="rounded border-slate-300 text-[#0C3B5E] shadow-sm focus:ring-[#4EBA87]" 
+                        name="remember"
+                    >
+                    <span class="ms-2 text-xs sm:text-sm text-slate-600">Recordarme</span>
+                </label>
+
                 @if (Route::has('password.request'))
                     <a href="{{ route('password.request') }}" class="text-xs sm:text-sm font-medium text-[#0C3B5E] hover:text-[#4EBA87] transition-colors duration-200 focus:outline-none focus:underline">
                         ¿Olvidaste tu contraseña?
@@ -73,8 +83,7 @@
             <div class="pt-2">
                 <button 
                     type="submit" 
-                    class="w-full py-3.5 px-4 bg-[#0C3B5E] hover:bg-[#082942] active:bg-[#051C2E] text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg shadow-[#0C3B5E]/20 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#0C3B5E]/30"
-                >
+                    class="w-full py-3.5 px-4 bg-[#0C3B5E] hover:bg-[#082942] active:bg-[#051C2E] text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg shadow-[#0C3B5E]/20 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-4 focus:ring-[#0C3B5E]/30">
                     Ingresar
                 </button>
             </div>
@@ -96,35 +105,6 @@
                     class="w-full inline-flex items-center justify-center py-3 px-4 border border-slate-300 hover:border-[#0C3B5E] bg-white hover:bg-slate-50 text-slate-700 hover:text-[#0C3B5E] font-semibold text-sm rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-slate-200"
                 >
                     Crear cuenta
-            <x-input-label for="correo" :value="__('Email')" />
-            <x-text-input id="correo" class="block mt-1 w-full" type="email" name="correo" :value="old('correo')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('correo')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
                 </a>
             @endif
         </div>
