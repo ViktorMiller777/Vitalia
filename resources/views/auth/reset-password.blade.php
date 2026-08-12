@@ -5,6 +5,17 @@
             <a href="/" class="group">
                 <x-application-logo class="h-24 w-auto transition-transform duration-300 group-hover:scale-105" />
             </a>
+    <form method="POST" action="{{ route('password.store') }}">
+        @csrf
+
+        <!-- Password Reset Token -->
+        <input type="hidden" name="token" value="{{ $request->route('token') }}">
+
+        <!-- Email Address -->
+        <div>
+            <x-input-label for="correo" :value="__('Email')" />
+            <x-text-input id="correo" class="block mt-1 w-full" type="email" name="correo" :value="old('correo', $request->correo)" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('correo')" class="mt-2" />
         </div>
 
         <!-- Title & Subtitle -->

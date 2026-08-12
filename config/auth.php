@@ -42,6 +42,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'device-key' => [
+            'driver' => 'device-key',
+            'provider' => null,
+        ],
     ],
 
     /*
