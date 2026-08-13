@@ -88,6 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('medicamentos')->group(function () {
         Route::post('/', [MedicationController::class, 'store'])->middleware('role:Administrador');
         Route::get('/', [MedicationController::class, 'index']);
+        Route::get('activos', [MedicationController::class, 'active']);
         Route::get('{id}', [MedicationController::class, 'show']);
         Route::put('{id}', [MedicationController::class, 'update'])->middleware('role:Administrador');
     });

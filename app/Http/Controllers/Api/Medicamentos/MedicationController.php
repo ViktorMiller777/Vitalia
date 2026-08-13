@@ -53,4 +53,18 @@ class MedicationController extends Controller
 
         return ApiResponse::success('MED-0005', 'Medicamento actualizado en el catálogo', ['id' => $medication->id]);
     }
+
+    public function active(): JsonResponse
+    {
+        $activePrescriptions = \App\Models\Prescription::with(['resident', 'medication'])
+            ->whereIn('estado', ['active', 'Activo', 'activo'])
+            ->get();
+
+        return ApiResponse::success('GEN-0001', 'Medicamentos activos obtenidos correctamente', \App\Http\Resources\PrescriptionResource::collection($activePrescriptions));
+    }
+
+    public static function countActive(): int
+    {
+        return \App\Models\Prescription::whereIn('estado', ['active', 'Activo', 'activo'])->count();
+    }
 }

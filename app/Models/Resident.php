@@ -40,4 +40,29 @@ class Resident extends Model
     {
         return $this->hasMany(FamilyLink::class, 'interno_id');
     }
+
+    public function medications(): HasMany
+    {
+        return $this->hasMany(Prescription::class, 'interno_id');
+    }
+
+    public function prescriptions(): HasMany
+    {
+        return $this->hasMany(Prescription::class, 'interno_id');
+    }
+
+    public function alerts(): HasMany
+    {
+        return $this->hasMany(Alert::class, 'interno_id');
+    }
+
+    public function incidents(): HasMany
+    {
+        return $this->hasMany(Incident::class, 'interno_id');
+    }
+
+    public function vitalSigns(): HasMany
+    {
+        return $this->hasMany(VitalSign::class, 'interno_id');
+    }
 }

@@ -36,4 +36,9 @@ class FamilyLink extends Model
     {
         return $this->belongsTo(User::class, 'usuario_id');
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'usuario_id');
+    }
 }

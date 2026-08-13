@@ -37,6 +37,11 @@ class User extends Authenticatable
         return $this->belongsTo(Rol::class, 'rol_id');
     }
 
+    public function familyLinks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(FamilyLink::class, 'usuario_id');
+    }
+
     /**
      * Get the email address where password reset links are sent.
      */

@@ -17,8 +17,19 @@ class UpdateResidentRequest extends ApiFormRequest
             'apellido_paterno' => ['required', 'string', 'max:50'],
             'apellido_materno' => ['required', 'string', 'max:50'],
             'fecha_nacimiento' => ['required', 'date'],
-            'sexo' => ['required', Rule::in(['M', 'F'])],
+            'sexo' => ['required', Rule::in(['M', 'F', 'Masculino', 'Femenino'])],
             'fecha_ingreso' => ['nullable', 'date'],
+            'estado' => ['nullable', 'string'],
+            'tipo_sangre' => ['nullable', 'string', 'max:10'],
+            'peso' => ['nullable', 'numeric'],
+            'estatura' => ['nullable', 'numeric'],
+            'alergias' => ['nullable', 'string'],
+            'padecimientos' => ['nullable', 'string'],
+            'antecedentes_medicos' => ['nullable', 'string'],
+            'enfermedades_cronicas' => ['nullable', 'string'],
+            'cirugias_previas' => ['nullable', 'string'],
+            'observaciones_generales' => ['nullable', 'string'],
+            'observaciones' => ['nullable', 'string'],
         ];
     }
 

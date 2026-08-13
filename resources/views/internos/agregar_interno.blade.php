@@ -1,4 +1,30 @@
 <style>
+    .guardar-registro {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.625rem 1.5rem;
+        background-color: #355C7D;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.875rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(53, 92, 125, 0.2);
+        transition: all 150ms ease-in-out;
+        border: none;
+        cursor: pointer;
+        margin: 10px;
+    }
+
+    .guardar-registro:hover {
+        background-color: #2A4A66;
+        box-shadow: 0 10px 15px -3px rgba(53, 92, 125, 0.3);
+        color: #ffffff;
+    }
+
+    .guardar-registro:active {
+        background-color: #20394E;
+    }
 </style>
 <x-app-layout>
     <div class="min-h-screen bg-slate-50 flex flex-col md:flex-row">
@@ -188,7 +214,7 @@
                         <a href="{{ route('internos.index') }}" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition duration-150">
                             Cancelar
                         </a>
-                        <button type="submit" class="inline-flex items-center justify-center px-6 py-2.5 bg-[#4EBA87] hover:bg-emerald-600 active:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md shadow-[#4EBA87]/20 transition duration-150">
+                        <button type="submit" class="guardar-registro">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>

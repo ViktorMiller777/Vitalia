@@ -1,6 +1,23 @@
 <x-app-layout>
-    <div class="py-8 bg-slate-50 min-h-screen">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div class="min-h-screen bg-slate-50 flex flex-col md:flex-row">
+        
+        <!-- SIDEBAR DE NAVEGACIÓN -->
+        <x-sidebar />
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-6 md:p-10 space-y-8">
+
+            @if (session('success'))
+                <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-700 text-sm font-medium flex items-center justify-between">
+                    <span>{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-sm font-medium flex items-center justify-between">
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
 
             <!-- 1. STATS / KPI CARDS GRID (5 Cards) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -67,7 +84,7 @@
                         </div>
                     </div>
                     <div class="mt-3 flex items-baseline">
-                        <span class="text-3xl font-extrabold text-[#0C3B5E]">18</span>
+                        <span class="text-3xl font-extrabold text-[#0C3B5E]">{{ $medicamentosActivos }}</span>
                         <span class="ml-2 text-xs font-medium text-emerald-600">En receta</span>
                     </div>
                 </div>
@@ -96,64 +113,59 @@
                         <div class="w-3 h-3 rounded-full bg-rose-500 animate-pulse"></div>
                         <h2 class="text-lg font-bold text-[#0C3B5E] tracking-tight">Alertas recientes</h2>
                     </div>
-                    <span class="bg-rose-50 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-rose-200">
-                        2 Pendientes
-                    </span>
                 </div>
 
                 <div class="space-y-3">
-                    <!-- Alerta 1 -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-rose-50/60 border border-rose-200/80 rounded-2xl transition hover:bg-rose-50">
-                        <div class="flex items-center space-x-3">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm">
-                                🌡️
-                            </span>
-                            <div>
-                                <h3 class="text-sm font-bold text-slate-800">Temperatura alta: Interno 3</h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Registrado hace 15 minutos • Valor: 38.5 °C</p>
-                            </div>
-                        </div>
-                        <span class="mt-2 sm:mt-0 text-xs font-semibold text-rose-700 bg-white px-3 py-1 rounded-lg border border-rose-200 text-center">
-                            Alta prioridad
-                        </span>
-                    </div>
+                    @forelse ($ultimasAlertas as $alerta)
+                        @php
+                            $colorClasses = match($alerta->estado) {
+                                'Activa' => 'bg-rose-50/60 border-rose-200/80 hover:bg-rose-50',
+                                'Atendida' => 'bg-emerald-50/50 border-emerald-200/70 hover:bg-emerald-50',
+                                'Descartada' => 'bg-slate-50/60 border-slate-200/80 hover:bg-slate-50',
+                                default => 'bg-slate-50/60 border-slate-200/80 hover:bg-slate-50',
+                            };
 
-                    <!-- Alerta 2 -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-amber-50/60 border border-amber-200/80 rounded-2xl transition hover:bg-amber-50">
-                        <div class="flex items-center space-x-3">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-sm">
-                                🩺
-                            </span>
-                            <div>
-                                <h3 class="text-sm font-bold text-slate-800">Glucosa baja: Interno 7</h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Registrado hace 45 minutos • Valor: 65 mg/dL</p>
-                            </div>
-                        </div>
-                        <span class="mt-2 sm:mt-0 text-xs font-semibold text-amber-700 bg-white px-3 py-1 rounded-lg border border-amber-200 text-center">
-                            Media prioridad
-                        </span>
-                    </div>
+                            $badgeClasses = match($alerta->estado) {
+                                'Activa' => 'text-rose-700 border-rose-200',
+                                'Atendida' => 'text-emerald-700 border-emerald-200',
+                                'Descartada' => 'text-slate-500 border-slate-200',
+                                default => 'text-slate-500 border-slate-200',
+                            };
 
-                    <!-- Alerta 3 (Atendidas) -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-emerald-50/50 border border-emerald-200/70 rounded-2xl transition hover:bg-emerald-50">
-                        <div class="flex items-center space-x-3">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">
-                                ✅
-                            </span>
-                            <div>
-                                <h3 class="text-sm font-bold text-slate-800">Atendidas: 3</h3>
-                                <p class="text-xs text-slate-500 mt-0.5">Alertas resueltas satisfactoriamente en las últimas 24 horas</p>
+                            $icono = match($alerta->estado) {
+                                'Activa' => '🌡️',
+                                'Atendida' => '✅',
+                                'Descartada' => '🚫',
+                                default => '❓',
+                            };
+                        @endphp
+
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 {{ $colorClasses }} border rounded-2xl transition">
+                            <div class="flex items-center space-x-3">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-white text-lg flex items-center justify-center font-bold text-sm">
+                                    {{ $icono }}
+                                </span>
+                                <div>
+                                    <h3 class="text-sm font-bold text-slate-800">
+                                        {{ $alerta->tipo_alerta }}@if($alerta->interno): Interno {{ $alerta->interno->id }}@endif
+                                    </h3>
+                                    <p class="text-xs text-slate-500 mt-0.5">
+                                        {{ $alerta->descripcion }} • {{ optional($alerta->created_at)->diffForHumans() ?? 'Sin fecha' }}
+                                    </p>
+                                </div>
                             </div>
+                            <span class="mt-2 sm:mt-0 text-xs font-semibold {{ $badgeClasses }} bg-white px-3 py-1 rounded-lg border text-center">
+                                {{ $alerta->estado }}
+                            </span>
                         </div>
-                        <span class="mt-2 sm:mt-0 text-xs font-semibold text-emerald-700 bg-white px-3 py-1 rounded-lg border border-emerald-200 text-center">
-                            Completadas
-                        </span>
-                    </div>
+                    @empty
+                        <p class="text-sm text-slate-400 text-center py-4">No hay alertas registradas.</p>
+                    @endforelse
                 </div>
 
                 <!-- Footer Link -->
                 <div class="mt-6 pt-3 border-t border-slate-100 text-left">
-                    <a href="#" class="inline-flex items-center text-sm font-semibold text-[#0C3B5E] hover:text-[#4EBA87] transition duration-200 group">
+                    <a href="{{ route('alertas.index') }}" class="inline-flex items-center text-sm font-semibold text-[#0C3B5E] hover:text-[#4EBA87] transition duration-200 group">
                         <span>Ver todas las alertas</span>
                         <svg class="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -166,68 +178,57 @@
             <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm">
                 <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-100">
                     <h2 class="text-lg font-bold text-[#0C3B5E] tracking-tight">Incidencias pendientes de aprobación</h2>
-                    <span class="text-xs font-medium text-slate-500">3 Registros</span>
+                    <span class="text-xs font-medium text-slate-500">{{ $incidenciasPendientes ?? count($ultimasIncidencias) }} Registros</span>
                 </div>
 
                 <div class="space-y-3">
-                    <!-- Incidencia 1 -->
-                    <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50/80 border border-slate-200 rounded-2xl hover:border-slate-300 transition duration-200 gap-4">
-                        <div class="flex items-center space-x-3">
-                            <span class="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                            <span class="text-sm font-bold text-slate-800 tracking-wide">
-                                23/06/2025 - Juan Pérez - Caída
-                            </span>
-                        </div>
-                        <div class="flex items-center space-x-3 self-end md:self-auto">
-                            <button class="px-4 py-1.5 bg-[#4EBA87] hover:bg-emerald-600 text-white font-semibold text-xs rounded-xl shadow-sm transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#4EBA87]/40">
-                                Aprobar
-                            </button>
-                            <button class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 font-semibold text-xs rounded-xl transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-200">
-                                Rechazar
-                            </button>
-                        </div>
-                    </div>
+                    @forelse ($ultimasIncidencias as $incidencia)
+                        @php
+                            $dotColor = match($incidencia->prioridad) {
+                                'Urgente', 'Alta' => 'bg-rose-500',
+                                'Media' => 'bg-amber-500',
+                                default => 'bg-sky-500',
+                            };
+                            $fechaFormateada = $incidencia->fecha_hora ? $incidencia->fecha_hora->format('d/m/Y') : ($incidencia->created_at ? $incidencia->created_at->format('d/m/Y') : '');
+                            $nombreInterno = $incidencia->resident ? ($incidencia->resident->nombre . ' ' . $incidencia->resident->apellido_paterno) : 'Interno #' . $incidencia->interno_id;
+                        @endphp
+                        <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50/80 border border-slate-200 rounded-2xl hover:border-slate-300 transition duration-200 gap-4">
+                            <div class="flex items-center space-x-3">
+                                <span class="flex-shrink-0 w-2.5 h-2.5 rounded-full {{ $dotColor }}"></span>
+                                <span class="text-sm font-bold text-slate-800 tracking-wide">
+                                    {{ $fechaFormateada }} - {{ $nombreInterno }} - {{ $incidencia->tipo_incidencia }}
+                                </span>
+                            </div>
+                            <div class="flex items-center space-x-3 self-end md:self-auto">
+                                <form action="{{ route('incidencias.update-status', ['id' => $incidencia->id]) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="estado" value="Aprobada">
+                                    <button type="submit" class="px-4 py-1.5 bg-[#4EBA87] hover:bg-emerald-600 text-white font-semibold text-xs rounded-xl shadow-sm transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#4EBA87]/40">
+                                        Aprobar
+                                    </button>
+                                </form>
 
-                    <!-- Incidencia 2 -->
-                    <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50/80 border border-slate-200 rounded-2xl hover:border-slate-300 transition duration-200 gap-4">
-                        <div class="flex items-center space-x-3">
-                            <span class="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                            <span class="text-sm font-bold text-slate-800 tracking-wide">
-                                22/06/2025 - María López - Dolor de cabeza
-                            </span>
+                                <form action="{{ route('incidencias.update-status', ['id' => $incidencia->id]) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="estado" value="Rechazada">
+                                    <button type="submit" class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 font-semibold text-xs rounded-xl transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-200">
+                                        Rechazar
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="flex items-center space-x-3 self-end md:self-auto">
-                            <button class="px-4 py-1.5 bg-[#4EBA87] hover:bg-emerald-600 text-white font-semibold text-xs rounded-xl shadow-sm transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#4EBA87]/40">
-                                Aprobar
-                            </button>
-                            <button class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 font-semibold text-xs rounded-xl transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-200">
-                                Rechazar
-                            </button>
+                    @empty
+                        <div class="p-6 text-center text-slate-400 text-sm font-medium bg-slate-50 rounded-2xl border border-slate-200">
+                            No hay incidencias pendientes registradas.
                         </div>
-                    </div>
-
-                    <!-- Incidencia 3 -->
-                    <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50/80 border border-slate-200 rounded-2xl hover:border-slate-300 transition duration-200 gap-4">
-                        <div class="flex items-center space-x-3">
-                            <span class="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-sky-500"></span>
-                            <span class="text-sm font-bold text-slate-800 tracking-wide">
-                                21/06/2025 - Carlos Ruiz - Fiebre
-                            </span>
-                        </div>
-                        <div class="flex items-center space-x-3 self-end md:self-auto">
-                            <button class="px-4 py-1.5 bg-[#4EBA87] hover:bg-emerald-600 text-white font-semibold text-xs rounded-xl shadow-sm transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#4EBA87]/40">
-                                Aprobar
-                            </button>
-                            <button class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 font-semibold text-xs rounded-xl transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-200">
-                                Rechazar
-                            </button>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
 
                 <!-- Footer Link -->
                 <div class="mt-6 pt-3 border-t border-slate-100 text-left">
-                    <a href="#" class="inline-flex items-center text-sm font-semibold text-[#0C3B5E] hover:text-[#4EBA87] transition duration-200 group">
+                    <a href="{{ route('incidencias.index') }}" class="inline-flex items-center text-sm font-semibold text-[#0C3B5E] hover:text-[#4EBA87] transition duration-200 group">
                         <span>Ver todas las incidencias</span>
                         <svg class="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -347,7 +348,7 @@
                 </div>
             </div>
 
-        </div>
+        </main>
     </div>
 
     <!-- Chart.js Scripts Initialization -->

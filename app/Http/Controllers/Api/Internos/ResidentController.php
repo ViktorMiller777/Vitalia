@@ -10,11 +10,14 @@ use App\Http\Requests\Api\Internos\UpdateResidentRequest;
 use App\Http\Resources\ResidentResource;
 use App\Models\Resident;
 use App\Models\User;
+use App\Models\Alert;
 use App\Models\Incident;
 use App\Support\ApiResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
+
+use App\Http\Controllers\Api\Medicamentos\MedicationController;
 
 class ResidentController extends Controller
 {
@@ -24,7 +27,11 @@ class ResidentController extends Controller
         return view('dashboard', [
             'internosActivos' => Resident::where('estado', 'Estable')->count(),
             'usuariosTotales' => User::where('estado', 'active')->count(),
-            'incidenciasPendientes' => Incident::where('estado', 'pendiente')->count(),
+            'incidenciasPendientes' => Incident::whereIn('estado', ['Pendiente', 'pendiente'])->count(),
+            'ultimasIncidencias' => Incident::with('resident')->whereIn('estado', ['Pendiente', 'pendiente'])->latest()->take(3)->get(),
+            'ultimasAlertas' => Alert::with('Resident')->latest()->take(3)->get(),
+            'alertasPendientes' => Alert::whereIn('estado', ['Pendiente', 'pendiente', 'Activa', 'activa'])->count(),
+            'medicamentosActivos' => MedicationController::countActive(),
         ]);
     }
     
@@ -97,40 +104,105 @@ class ResidentController extends Controller
         return view('internos.index', compact('internos', 'search', 'estado'));
     }
 
-    public function show(int $id): JsonResponse
+    public function show(\Illuminate\Http\Request $request, int $id): JsonResponse|View|RedirectResponse
     {
-        $resident = Resident::find($id);
+        $resident = Resident::with([
+            'clinicalHistory', 
+            'medications.medication', 
+            'familyLinks.user',
+            'alerts.usuario',
+            'incidents.cuidador',
+            'incidents.administrador'
+        ])->find($id);
 
         if (! $resident) {
-            throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
+            if ($request->wantsJson() || $request->is('api/*')) {
+                throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
+            }
+            return redirect()->route('internos.index')->with('error', 'El interno no existe en el sistema');
         }
 
-        return ApiResponse::success('GEN-0002', 'Recurso obtenido correctamente', new ResidentResource($resident));
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return ApiResponse::success('GEN-0002', 'Recurso obtenido correctamente', new ResidentResource($resident));
+        }
+
+        return view('internos.detalle_interno', compact('resident'));
     }
 
-    public function update(UpdateResidentRequest $request, int $id): JsonResponse
+    public function edit(int $id): View|RedirectResponse
+    {
+        $resident = Resident::with(['clinicalHistory', 'medications.medication', 'vitalSigns', 'familyLinks.user'])->find($id);
+
+        if (! $resident) {
+            return redirect()->route('internos.index')->with('error', 'El interno no existe');
+        }
+
+        return view('internos.editar_interno', compact('resident'));
+    }
+
+    public function update(UpdateResidentRequest $request, int $id): JsonResponse|RedirectResponse
     {
         $resident = Resident::find($id);
 
         if (! $resident) {
-            throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
+            if ($request->wantsJson() || $request->is('api/*')) {
+                throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
+            }
+            return redirect()->route('internos.index')->with('error', 'El interno no existe en el sistema');
         }
+
+        $rawSexo = $request->input('sexo');
+        $sexo = match ($rawSexo) {
+            'Masculino' => 'M',
+            'Femenino' => 'F',
+            default => $rawSexo,
+        };
 
         $resident->fill([
             'nombre' => $request->input('nombre'),
             'apellido_paterno' => $request->input('apellido_paterno'),
             'apellido_materno' => $request->input('apellido_materno'),
             'fecha_nacimiento' => $request->input('fecha_nacimiento'),
-            'sexo' => $request->input('sexo'),
+            'sexo' => $sexo,
         ]);
 
         if ($request->filled('fecha_ingreso')) {
             $resident->fecha_ingreso = $request->input('fecha_ingreso');
         }
 
+        if ($request->filled('estado')) {
+            $resident->estado = $request->input('estado');
+        }
+
         $resident->save();
 
-        return ApiResponse::success('INT-0006', 'Interno actualizado correctamente', ['id' => $resident->id]);
+        $clinicalHistoryData = array_filter([
+            'tipo_sangre' => $request->input('tipo_sangre'),
+            'peso' => $request->input('peso'),
+            'estatura' => $request->input('estatura'),
+            'alergias' => $request->input('alergias'),
+            'padecimientos' => $request->input('padecimientos'),
+            'antecedentes_medicos' => $request->input('antecedentes_medicos'),
+            'enfermedades_cronicas' => $request->input('enfermedades_cronicas'),
+            'cirugias_previas' => $request->input('cirugias_previas'),
+            'observaciones' => $request->input('observaciones_generales') ?? $request->input('observaciones'),
+        ], fn ($val) => ! is_null($val) && $val !== '');
+
+        if (! empty($clinicalHistoryData)) {
+            if ($resident->clinicalHistory) {
+                $clinicalHistoryData['updated_by'] = auth()->id();
+                $resident->clinicalHistory->update($clinicalHistoryData);
+            } else {
+                $clinicalHistoryData['created_by'] = auth()->id();
+                $resident->clinicalHistory()->create($clinicalHistoryData);
+            }
+        }
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return ApiResponse::success('INT-0006', 'Interno actualizado correctamente', ['id' => $resident->id]);
+        }
+
+        return redirect()->route('internos.editar_interno', ['id' => $resident->id])->with('success', 'El interno se ha actualizado correctamente.');
     }
 
     public function destroy(int $id): JsonResponse
