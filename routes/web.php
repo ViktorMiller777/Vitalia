@@ -23,54 +23,42 @@ Route::get('/agregar-internos', function () {
 
 Route::post('/agregar-internos', [ResidentController::class, 'store'])->name('internos.store');
 
-Route::get('/detalle-interno',function(){ //NOTA ESTA RUTA TENDRA EL PARAMETRO EL ID DEL INTERNO PARA MOSTRAR SUS DATOS
-    return view('internos.detalle_interno');
-})->name('internos.detalle_interno');
+Route::get('/detalle-interno/{id}', [ResidentController::class, 'show'])->name('internos.detalle_interno');
 
-Route::get('/editar-interno',function(){ //NOTA, ESTA RUTA TENDRA DE PARAMETRO EL ID DEL INTERNO PARA MOSTRAR Y EDITAR SUS DATOS
-    return view('internos.editar_interno');
-})->name('internos.editar_interno');
+Route::get('/editar-interno/{id}', [ResidentController::class, 'edit'])->name('internos.editar_interno');
+Route::put('/editar-interno/{id}', [ResidentController::class, 'update'])->name('internos.update');
 
 //VISTAS DE CUIDADORES(ADMIN)
-Route::get('/cuidadores',function(){
-    return view('cuidadores.index');
-})->name('cuidadores.index');
+Route::get('/cuidadores', [UserController::class, 'cuidadoresIndex'])->name('cuidadores.index');
 
-Route::get('/agregar-cuidador',function(){
-    return view('cuidadores.agregar_cuidador');
-})->name('cuidadores.create');
+Route::get('/agregar-cuidador', [UserController::class, 'cuidadorCreate'])->name('cuidadores.create');
+Route::post('/agregar-cuidador', [UserController::class, 'cuidadorStore'])->name('cuidadores.store');
 
-Route::get('/detalle-cuidador',function(){  //NOTA, ESTA RUTA TENDRA DE PARAMETRO EL ID DEL CUIDADOR PARA MOSTRAR SUS DATOS
-    return view('cuidadores.detalle_cuidador');
-})->name('cuidadores.detalle_cuidador');
+Route::get('/detalle-cuidador/{id}', [UserController::class, 'cuidadorShow'])->name('cuidadores.detalle_cuidador');
 
-Route::get('/editar-cuidador',function (){
-    return view('cuidadores.editar_cuidador');
-})->name('cuidadores.editar_cuidador');
+Route::get('/editar-cuidador/{id?}', [UserController::class, 'cuidadorEdit'])->name('cuidadores.editar_cuidador');
+Route::put('/editar-cuidador/{id}', [UserController::class, 'cuidadorUpdate'])->name('cuidadores.update');
 
 //VISTAS DE FAMILIARES(ADMIN)
 
-Route::get('/familiares',function(){
-    return view('familiar.index');
-})->name('familiares.index');
+Route::get('/familiares', [UserController::class, 'familiaresIndex'])->name('familiares.index');
 
-Route::get('/agregar-familiar',function(){
-    return view('familiar.agregar_familiar');
-})->name('familiar.create');
+Route::get('/agregar-familiar', [UserController::class, 'familiarCreate'])->name('familiar.create');
+Route::post('/agregar-familiar', [UserController::class, 'familiarStore'])->name('familiar.store');
 
-Route::get('/detalle-familiar',function(){
-    return view('familiar.detalle_familiar');
-})->name('familiar.detalle_familiar');
-
-Route::get('/editar-familiar',function(){
-    return view('familiar.editar_familiar');
-})->name('familiar.editar_familiar');
+Route::get('/detalle-familiar/{id}', [UserController::class, 'familiarShow'])->name('familiar.detalle_familiar');
+Route::get('/editar-familiar/{id?}', [UserController::class, 'familiarEdit'])->name('familiar.editar_familiar');
+Route::put('/editar-familiar/{id}', [UserController::class, 'familiarUpdate'])->name('familiar.update');
 
 
+
+use App\Http\Controllers\Api\Incidencias\IncidentController;
 
 Route::get('/incidencias',function(){
     return view('incidencias.index');
 })->name('incidencias.index');
+
+Route::patch('/incidencias/{id}/estado', [IncidentController::class, 'updateStatus'])->name('incidencias.update-status');
 
 Route::get('/alertas',function(){
     return view('alertas.index');

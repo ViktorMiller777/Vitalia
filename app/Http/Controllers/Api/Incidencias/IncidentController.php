@@ -13,6 +13,7 @@ use App\Models\Incident;
 use App\Models\Resident;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class IncidentController extends Controller
 {
@@ -21,7 +22,7 @@ class IncidentController extends Controller
         $resident = Resident::find($id);
 
         if (! $resident) {
-            throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
+            throw new ApiException('RES-1001', 'El interno no existe', 404);
         }
 
         $incident = Incident::create([
@@ -30,27 +31,42 @@ class IncidentController extends Controller
             'tipo_incidencia' => $request->input('tipo_incidencia'),
             'descripcion' => $request->input('descripcion'),
             'prioridad' => $request->prioridad(),
-            'fecha_hora' => now(),
+            'fecha_hora' => $request->fechaHora(),
             'estado' => 'Pendiente',
         ]);
 
-        return ApiResponse::success('INC-0001', 'Incidencia registrada correctamente', ['id' => $incident->id], 201);
+        return ApiResponse::created('INC-0001', 'Incidencia registrada correctamente', new IncidentResource($incident->load(['resident', 'cuidador'])));
     }
 
-    public function index(ListIncidentsRequest $request, int $id): JsonResponse
+    public function index(ListIncidentsRequest $request): JsonResponse
     {
-        $resident = Resident::find($id);
+        $query = Incident::query()->with(['resident', 'cuidador', 'administrador']);
 
-        if (! $resident) {
-            throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
+        if ($request->has('interno_id')) {
+            $query->where('interno_id', $request->query('interno_id'));
         }
 
-        $paginator = Incident::where('interno_id', $resident->id)
-            ->when($request->filled('estado'), fn ($query) => $query->where('estado', $request->input('estado')))
-            ->when($request->filled('prioridad'), fn ($query) => $query->where('prioridad', $request->input('prioridad')))
-            ->paginate($request->perPage(), page: $request->page());
+        if ($request->has('cuidador_id')) {
+            $query->where('cuidador_id', $request->query('cuidador_id'));
+        }
 
-        return ApiResponse::paginated('GEN-0001', 'Listado obtenido correctamente', $paginator, fn (Incident $incident) => new IncidentResource($incident));
+        if ($request->has('tipo_incidencia')) {
+            $query->where('tipo_incidencia', $request->query('tipo_incidencia'));
+        }
+
+        if ($request->has('prioridad')) {
+            $query->where('prioridad', $request->query('prioridad'));
+        }
+
+        if ($request->has('estado')) {
+            $query->where('estado', $request->query('estado'));
+        }
+
+        return ApiResponse::paginated(
+            $query->latest()->paginate($request->perPage()),
+            fn ($incident) => new IncidentResource($incident),
+            'Incidencias obtenidas correctamente'
+        );
     }
 
     public function show(int $id): JsonResponse
@@ -72,7 +88,7 @@ class IncidentController extends Controller
             throw new ApiException('INC-1001', 'La incidencia no existe', 404);
         }
 
-        if ($incident->estado !== 'Pendiente') {
+        if ($incident->estado !== 'Pendiente' && $incident->estado !== 'pendiente') {
             throw new ApiException('INC-1003', 'Esta incidencia ya fue revisada y no se puede modificar', 409);
         }
 
@@ -85,29 +101,39 @@ class IncidentController extends Controller
         return ApiResponse::success('INC-0004', 'Incidencia actualizada correctamente', ['id' => $incident->id]);
     }
 
-    public function updateStatus(UpdateIncidentStatusRequest $request, int $id): JsonResponse
+    public function updateStatus(UpdateIncidentStatusRequest $request, int $id): JsonResponse|RedirectResponse
     {
         $incident = Incident::find($id);
 
         if (! $incident) {
-            throw new ApiException('INC-1001', 'La incidencia no existe', 404);
+            if ($request->wantsJson() || $request->is('api/*')) {
+                throw new ApiException('INC-1001', 'La incidencia no existe', 404);
+            }
+            return back()->with('error', 'La incidencia no existe');
         }
 
-        if ($incident->estado !== 'Pendiente') {
-            throw new ApiException('INC-1003', 'Esta incidencia ya fue revisada y no se puede modificar', 409);
+        if ($incident->estado !== 'Pendiente' && $incident->estado !== 'pendiente') {
+            if ($request->wantsJson() || $request->is('api/*')) {
+                throw new ApiException('INC-1003', 'Esta incidencia ya fue revisada y no se puede modificar', 409);
+            }
+            return back()->with('error', 'Esta incidencia ya fue revisada');
         }
 
         $estado = $request->input('estado');
 
         $incident->update([
             'estado' => $estado,
-            'administrador_id' => $request->user()->id,
+            'administrador_id' => $request->user()?->id,
         ]);
 
         [$ref, $msg] = $estado === 'Aprobada'
             ? ['INC-0002', 'Incidencia aprobada']
             : ['INC-0003', 'Incidencia rechazada'];
 
-        return ApiResponse::success($ref, $msg, ['id' => $incident->id]);
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return ApiResponse::success($ref, $msg, ['id' => $incident->id]);
+        }
+
+        return back()->with('success', "Incidencia {$estado} correctamente.");
     }
 }

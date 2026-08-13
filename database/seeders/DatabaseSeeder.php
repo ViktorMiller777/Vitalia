@@ -17,20 +17,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(RolSeeder::class);
-
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'nombre' => 'María',
-            'apellido_paterno' => 'López',
-            'apellido_materno' => 'García',
-            'correo' => 'admin@vitalia.com',
-            'telefono' => '+52 5512345678',
-            'usuario' => 'admin.vitalia',
-            'password' => Hash::make('123456789'),
-            'rol_id' => Rol::where('nombre', 'Administrador')->value('id'),
-            'estado' => 'active',
+        $this->call([
+            RolSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }
