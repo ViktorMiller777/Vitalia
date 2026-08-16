@@ -22,6 +22,12 @@
     .button-blue:active {
         background-color: #20394E;
     }
+
+    /* Colores sólidos puros del sistema sin opacidad */
+    .badge-verde {
+        background-color: #6C9A8B;
+        color: #ffffff;
+    }
 </style>
 <x-app-layout>
     <div class="min-h-screen bg-slate-50 flex flex-col md:flex-row">
@@ -139,11 +145,12 @@
                                     </td>
                                     <td class="py-4 px-6 whitespace-nowrap">
                                         @if($isActive)
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold badge-verde whitespace-nowrap">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5 shrink-0"></span>
                                                 Activo
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap">
                                                 Inactivo
                                             </span>
                                         @endif

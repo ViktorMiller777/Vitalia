@@ -45,6 +45,12 @@
                         Alta de nuevo interno
                     </p>
                 </div>
+                <a href="{{ route('internos.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition duration-150 shadow-xs">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Volver a la lista
+                </a>
             </div>
 
             <!-- FORMULARIO DE INTERNOS -->

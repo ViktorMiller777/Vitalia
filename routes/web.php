@@ -5,9 +5,7 @@ use App\Http\Controllers\Api\Usuarios\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/login');
 
 //DASHBOARD DEL ADMINISTRADOR
 Route::get('/dashboard',function(){
@@ -54,14 +52,75 @@ Route::put('/editar-familiar/{id}', [UserController::class, 'familiarUpdate'])->
 
 use App\Http\Controllers\Api\Incidencias\IncidentController;
 
-Route::get('/incidencias',function(){
-    return view('incidencias.index');
+Route::get('/incidencias', function (\Illuminate\Http\Request $request) {
+    $query = \App\Models\Incident::with(['resident', 'cuidador'])->latest('id');
+
+    if ($request->filled('buscar')) {
+        $buscar = $request->input('buscar');
+        $query->where(function($q) use ($buscar) {
+            $q->where('descripcion', 'like', "%{$buscar}%")
+              ->orWhere('tipo_incidencia', 'like', "%{$buscar}%")
+              ->orWhereHas('resident', function($r) use ($buscar) {
+                  $r->where('nombre', 'like', "%{$buscar}%")
+                    ->orWhere('apellido_paterno', 'like', "%{$buscar}%");
+              });
+        });
+    }
+
+    if ($request->filled('estado')) {
+        $query->where('estado', $request->input('estado'));
+    }
+
+    if ($request->filled('prioridad')) {
+        $query->where('prioridad', $request->input('prioridad'));
+    }
+
+    $incidencias = $query->paginate(5)->withQueryString();
+
+    $totalIncidencias = \App\Models\Incident::count();
+    $pendientes = \App\Models\Incident::whereIn('estado', ['Pendiente', 'pendiente'])->count();
+    $aprobadas = \App\Models\Incident::whereIn('estado', ['Aprobada', 'aprobada'])->count();
+    $rechazadas = \App\Models\Incident::whereIn('estado', ['Rechazada', 'rechazada'])->count();
+    $resueltas = \App\Models\Incident::whereIn('estado', ['Resuelta', 'resuelta'])->count();
+
+    return view('incidencias.index', compact('incidencias', 'totalIncidencias', 'pendientes', 'aprobadas', 'rechazadas', 'resueltas'));
 })->name('incidencias.index');
 
 Route::patch('/incidencias/{id}/estado', [IncidentController::class, 'updateStatus'])->name('incidencias.update-status');
 
-Route::get('/alertas',function(){
-    return view('alertas.index');
+Route::get('/alertas', function (\Illuminate\Http\Request $request) {
+    $query = \App\Models\Alert::with(['resident', 'usuario'])->latest('id');
+
+    if ($request->filled('buscar')) {
+        $buscar = $request->input('buscar');
+        $query->where(function($q) use ($buscar) {
+            $q->where('descripcion', 'like', "%{$buscar}%")
+              ->orWhere('tipo_alerta', 'like', "%{$buscar}%")
+              ->orWhere('origen', 'like', "%{$buscar}%")
+              ->orWhereHas('resident', function($r) use ($buscar) {
+                  $r->where('nombre', 'like', "%{$buscar}%")
+                    ->orWhere('apellido_paterno', 'like', "%{$buscar}%");
+              });
+        });
+    }
+
+    if ($request->filled('estado')) {
+        $query->where('estado', $request->input('estado'));
+    }
+
+    $alertas = $query->paginate(5)->withQueryString();
+
+    $activas = \App\Models\Alert::whereIn('estado', ['Activa', 'activa', 'Pendiente', 'pendiente'])->count();
+    $atendidas = \App\Models\Alert::whereIn('estado', ['Atendida', 'atendida'])->count();
+    $resueltas = \App\Models\Alert::whereIn('estado', ['Resuelta', 'resuelta', 'Descartada', 'descartada'])->count();
+    $criticas = \App\Models\Alert::where(function($q) {
+        $q->whereIn('estado', ['Critica', 'critica', 'Crítica'])
+          ->orWhere('tipo_alerta', 'like', '%critica%')
+          ->orWhere('tipo_alerta', 'like', '%Crítica%');
+    })->count();
+    $ultimaAlerta = \App\Models\Alert::latest()->first()?->created_at?->format('H:i') ?? '--:--';
+
+    return view('alertas.index', compact('alertas', 'activas', 'atendidas', 'resueltas', 'criticas', 'ultimaAlerta'));
 })->name('alertas.index');
 
 

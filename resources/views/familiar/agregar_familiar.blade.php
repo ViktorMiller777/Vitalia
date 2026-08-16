@@ -10,7 +10,7 @@
         font-size: 0.875rem;
         border-radius: 0.75rem;
         box-shadow: 0 4px 6px -1px rgba(53, 92, 125, 0.2);
-        transition: all 150ms ease-in-out;
+        transition: all 50ms ease-in-out;
         border: none;
         cursor: pointer;
         margin: 10px;
@@ -39,7 +39,7 @@
                         Registro de Familiar
                     </h1>
                     <p class="text-slate-500 text-sm mt-1">
-                        Crear nuevo familiar del sistema (Rol #3)
+                        Crear nuevo familiar del sistema
                     </p>
                 </div>
                 <a href="{{ route('familiares.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition duration-150 shadow-xs">
