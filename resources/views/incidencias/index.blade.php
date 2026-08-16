@@ -42,6 +42,44 @@
     .button-outline:hover {
         background-color: #f8fafc;
     }
+
+    /* Colores sólidos puros del sistema sin opacidad */
+    .badge-rojo {
+        background-color: #D96C6C;
+        color: #ffffff;
+    }
+    .badge-naranja {
+        background-color: #E6A23C;
+        color: #ffffff;
+    }
+    .badge-verde {
+        background-color: #6C9A8B;
+        color: #ffffff;
+    }
+
+    .card-rojo {
+        background-color: #ffffff;
+        border: 2px solid #D96C6C;
+    }
+    .text-rojo {
+        color: #D96C6C;
+    }
+
+    .card-naranja {
+        background-color: #ffffff;
+        border: 2px solid #E6A23C;
+    }
+    .text-naranja {
+        color: #E6A23C;
+    }
+
+    .card-verde {
+        background-color: #ffffff;
+        border: 2px solid #6C9A8B;
+    }
+    .text-verde {
+        color: #6C9A8B;
+    }
 </style>
 
 <x-app-layout>
@@ -82,7 +120,7 @@
             </div>
 
             <!-- TOOLBAR: FILTROS -->
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+            <form method="GET" action="{{ route('incidencias.index') }}" class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
                 <div class="flex flex-col md:flex-row items-center gap-3">
 
                     <!-- Buscar -->
@@ -94,54 +132,39 @@
                         </div>
                         <input
                             type="text"
+                            name="buscar"
+                            value="{{ request('buscar') }}"
                             placeholder="Buscar incidencia..."
                             class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:bg-white focus:border-[#355C7D] focus:ring-4 focus:ring-[#355C7D]/15 transition duration-200"
                         />
                     </div>
 
                     <!-- Filtro Estado -->
-                    <select class="w-full md:w-auto px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-700 font-semibold text-sm focus:outline-none focus:border-[#355C7D] focus:ring-4 focus:ring-[#355C7D]/15 transition duration-200 cursor-pointer appearance-none pr-8">
+                    <select name="estado" onchange="this.form.submit()" class="w-full md:w-auto px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-700 font-semibold text-sm focus:outline-none focus:border-[#355C7D] focus:ring-4 focus:ring-[#355C7D]/15 transition duration-200 cursor-pointer appearance-none pr-8">
                         <option value="">Estado ▾</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="aprobada">Aprobada</option>
-                        <option value="rechazada">Rechazada</option>
-                        <option value="resuelta">Resuelta</option>
+                        <option value="Pendiente" {{ request('estado') == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
+                        <option value="Aprobada" {{ request('estado') == 'Aprobada' ? 'selected' : '' }}>Aprobada</option>
+                        <option value="Rechazada" {{ request('estado') == 'Rechazada' ? 'selected' : '' }}>Rechazada</option>
+                        <option value="Resuelta" {{ request('estado') == 'Resuelta' ? 'selected' : '' }}>Resuelta</option>
                     </select>
 
                     <!-- Filtro Prioridad -->
-                    <select class="w-full md:w-auto px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-700 font-semibold text-sm focus:outline-none focus:border-[#355C7D] focus:ring-4 focus:ring-[#355C7D]/15 transition duration-200 cursor-pointer appearance-none pr-8">
+                    <select name="prioridad" onchange="this.form.submit()" class="w-full md:w-auto px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-700 font-semibold text-sm focus:outline-none focus:border-[#355C7D] focus:ring-4 focus:ring-[#355C7D]/15 transition duration-200 cursor-pointer appearance-none pr-8">
                         <option value="">Prioridad ▾</option>
-                        <option value="urgente">Urgente</option>
-                        <option value="alta">Alta</option>
-                        <option value="media">Media</option>
-                        <option value="baja">Baja</option>
+                        <option value="Urgente" {{ request('prioridad') == 'Urgente' ? 'selected' : '' }}>Urgente</option>
+                        <option value="Alta" {{ request('prioridad') == 'Alta' ? 'selected' : '' }}>Alta</option>
+                        <option value="Media" {{ request('prioridad') == 'Media' ? 'selected' : '' }}>Media</option>
+                        <option value="Baja" {{ request('prioridad') == 'Baja' ? 'selected' : '' }}>Baja</option>
                     </select>
 
-                    <!-- Filtro Interno -->
-                    <select class="w-full md:w-auto px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-700 font-semibold text-sm focus:outline-none focus:border-[#355C7D] focus:ring-4 focus:ring-[#355C7D]/15 transition duration-200 cursor-pointer appearance-none pr-8">
-                        <option value="">Interno ▾</option>
-                        <option>Juan Pérez</option>
-                        <option>María González</option>
-                        <option>Carlos Ruiz</option>
-                    </select>
-
-                    <!-- Filtro Cuidador -->
-                    <select class="w-full md:w-auto px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-700 font-semibold text-sm focus:outline-none focus:border-[#355C7D] focus:ring-4 focus:ring-[#355C7D]/15 transition duration-200 cursor-pointer appearance-none pr-8">
-                        <option value="">Cuidador ▾</option>
-                        <option>María López</option>
-                        <option>José García</option>
-                    </select>
-
-                    <!-- Filtro Fecha -->
-                    <select class="w-full md:w-auto px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-700 font-semibold text-sm focus:outline-none focus:border-[#355C7D] focus:ring-4 focus:ring-[#355C7D]/15 transition duration-200 cursor-pointer appearance-none pr-8">
-                        <option value="">Fecha ▾</option>
-                        <option>Hoy</option>
-                        <option>Esta semana</option>
-                        <option>Este mes</option>
-                    </select>
+                    @if(request('buscar') || request('estado') || request('prioridad'))
+                        <a href="{{ route('incidencias.index') }}" class="px-3 py-2 text-xs font-semibold text-rose-600 hover:text-rose-800 transition">
+                            Limpiar filtros
+                        </a>
+                    @endif
 
                 </div>
-            </div>
+            </form>
 
             <!-- TARJETAS ESTADÍSTICAS -->
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -149,12 +172,12 @@
                  <div class="flex gap-4">
                     <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex-1">
                         <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total</p>
-                        <p class="text-3xl font-extrabold text-[#0C3B5E]">47</p>
+                        <p class="text-3xl font-extrabold text-[#0C3B5E]">{{ $totalIncidencias ?? \App\Models\Incident::count() }}</p>
                     </div>
                     <!-- Pendientes -->
                     <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex-1">
                         <p class="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1">Pendientes</p>
-                        <p class="text-3xl font-extrabold text-amber-600">12</p>
+                        <p class="text-3xl font-extrabold text-amber-600">{{ $pendientes ?? \App\Models\Incident::whereIn('estado', ['Pendiente', 'pendiente'])->count() }}</p>
                     </div>
                  </div>
 
@@ -162,12 +185,12 @@
                         <!-- Aprobadas -->
                     <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex-1">
                         <p class="text-xs font-semibold text-emerald-500 uppercase tracking-wider mb-1">Aprobadas</p>
-                        <p class="text-3xl font-extrabold text-emerald-600">8</p>
+                        <p class="text-3xl font-extrabold text-emerald-600">{{ $aprobadas ?? \App\Models\Incident::whereIn('estado', ['Aprobada', 'aprobada'])->count() }}</p>
                     </div>
                     <!-- Rechazadas -->
                     <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex-1">
                         <p class="text-xs font-semibold text-rose-400 uppercase tracking-wider mb-1">Rechazadas</p>
-                        <p class="text-3xl font-extrabold text-rose-600">5</p>
+                        <p class="text-3xl font-extrabold text-rose-600">{{ $rechazadas ?? \App\Models\Incident::whereIn('estado', ['Rechazada', 'rechazada'])->count() }}</p>
                     </div>
                  </div>
                 
@@ -175,7 +198,7 @@
                 <!-- Resueltas -->
                 <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
                     <p class="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-1">Resueltas</p>
-                    <p class="text-3xl font-extrabold text-sky-600">22</p>
+                    <p class="text-3xl font-extrabold text-sky-600">{{ $resueltas ?? \App\Models\Incident::whereIn('estado', ['Resuelta', 'resuelta'])->count() }}</p>
                 </div>
             </div>
 
@@ -185,128 +208,73 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50/80 border-b border-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider">
-                                <th class="py-4 px-6">ID</th>
                                 <th class="py-4 px-6">Fecha</th>
                                 <th class="py-4 px-6">Interno</th>
                                 <th class="py-4 px-6">Tipo</th>
                                 <th class="py-4 px-6">Prioridad</th>
                                 <th class="py-4 px-6">Cuidador</th>
                                 <th class="py-4 px-6">Estado</th>
-                                <th class="py-4 px-6 text-right">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-sm">
-
-                            <!-- Fila 1 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-[#0C3B5E]">INC-001</td>
-                                <td class="py-4 px-6 text-slate-500 font-medium">23/06 08:30</td>
-                                <td class="py-4 px-6 font-semibold text-slate-800 flex items-center space-x-2">
-                                    <div class="w-8 h-8 rounded-full bg-[#0C3B5E] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">JP</div>
-                                    <span>Juan Pérez</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600">Caída</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>
-                                        Urgente
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600">María López</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
-                                        Pendiente
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">Ver</button>
-                                    <button class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold text-xs rounded-lg transition duration-150">Aprobar</button>
-                                    <button class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-xs rounded-lg transition duration-150">Rechazar</button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 2 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-[#0C3B5E]">INC-002</td>
-                                <td class="py-4 px-6 text-slate-500 font-medium">22/06 14:15</td>
-                                <td class="py-4 px-6 font-semibold text-slate-800 flex items-center space-x-2">
-                                    <div class="w-8 h-8 rounded-full bg-[#4EBA87] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">MG</div>
-                                    <span>María González</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600">Síntoma</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-orange-50 text-orange-700 border border-orange-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-orange-500 mr-1.5"></span>
-                                        Alta
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600">José García</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                                        Aprobada
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">Ver</button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 3 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-[#0C3B5E]">INC-003</td>
-                                <td class="py-4 px-6 text-slate-500 font-medium">21/06 09:45</td>
-                                <td class="py-4 px-6 font-semibold text-slate-800 flex items-center space-x-2">
-                                    <div class="w-8 h-8 rounded-full bg-sky-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">CR</div>
-                                    <span>Carlos Ruiz</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600">Conducta</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-sky-500 mr-1.5"></span>
-                                        Media
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600">María López</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>
-                                        Rechazada
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">Ver</button>
-                                </td>
-                            </tr>
-
-                            <!-- Fila 4 -->
-                            <tr class="hover:bg-slate-50/60 transition duration-150">
-                                <td class="py-4 px-6 font-bold text-[#0C3B5E]">INC-004</td>
-                                <td class="py-4 px-6 text-slate-500 font-medium">20/06 17:00</td>
-                                <td class="py-4 px-6 font-semibold text-slate-800 flex items-center space-x-2">
-                                    <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">AG</div>
-                                    <span>Ana Gómez</span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600">Medicación</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
-                                        Baja
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-slate-600">José García</td>
-                                <td class="py-4 px-6">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-sky-500 mr-1.5"></span>
-                                        Resuelta
-                                    </span>
-                                </td>
-                                <td class="py-4 px-6 text-right space-x-2">
-                                    <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#0C3B5E] font-semibold text-xs rounded-lg transition duration-150">Ver</button>
-                                </td>
-                            </tr>
-
+                            @forelse($incidencias as $incidencia)
+                                <tr class="hover:bg-slate-50/60 transition duration-150">
+                                    <td class="py-4 px-6 text-slate-500 font-medium whitespace-nowrap">
+                                        {{ $incidencia->fecha_hora ? $incidencia->fecha_hora->format('d/m/Y H:i') : ($incidencia->created_at ? $incidencia->created_at->format('d/m/Y H:i') : '-') }}
+                                    </td>
+                                    <td class="py-4 px-6 font-semibold text-slate-800 whitespace-nowrap">
+                                        <div class="flex items-center space-x-2.5">
+                                            <div class="w-8 h-8 rounded-full bg-[#0C3B5E] text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                                {{ strtoupper(substr($incidencia->resident->nombre ?? 'I', 0, 1) . substr($incidencia->resident->apellido_paterno ?? 'N', 0, 1)) }}
+                                            </div>
+                                            <span>{{ $incidencia->resident ? ($incidencia->resident->nombre . ' ' . $incidencia->resident->apellido_paterno) : 'Sin asignar' }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-6 text-slate-600 font-medium">
+                                        {{ $incidencia->tipo_incidencia }}
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        @php
+                                            $prio = strtolower($incidencia->prioridad);
+                                            $prioStyle = match($prio) {
+                                                'urgente' => 'badge-rojo',
+                                                'alta' => 'badge-naranja',
+                                                'media' => 'bg-sky-50 text-sky-700 border border-sky-200',
+                                                default => 'bg-slate-100 text-slate-600 border border-slate-200'
+                                            };
+                                        @endphp
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $prioStyle }}">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
+                                            {{ ucfirst($incidencia->prioridad) }}
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-6 text-slate-600">
+                                        {{ $incidencia->cuidador ? ($incidencia->cuidador->nombre . ' ' . $incidencia->cuidador->apellido_paterno) : 'Sin asignación' }}
+                                    </td>
+                                    <td class="py-4 px-6">
+                                        @php
+                                            $est = strtolower($incidencia->estado);
+                                            $estClass = match($est) {
+                                                'pendiente' => 'badge-naranja',
+                                                'aprobada' => 'badge-verde',
+                                                'rechazada' => 'badge-rojo',
+                                                'resuelta' => 'bg-sky-50 text-sky-700 border border-sky-200',
+                                                default => 'bg-slate-100 text-slate-700 border border-slate-200'
+                                            };
+                                        @endphp
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $estClass }}">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
+                                            {{ ucfirst($incidencia->estado) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="py-8 px-6 text-center text-slate-500 font-medium">
+                                        No se encontraron incidencias registradas.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -314,24 +282,10 @@
                 <!-- PAGINACIÓN -->
                 <div class="bg-slate-50/80 px-6 py-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p class="text-xs font-medium text-slate-500">
-                        Mostrando <span class="font-bold text-slate-700">1</span> a <span class="font-bold text-slate-700">4</span> de <span class="font-bold text-slate-700">47</span> incidencias
+                        Mostrando <span class="font-bold text-slate-700">{{ $incidencias->firstItem() ?? 0 }}</span> a <span class="font-bold text-slate-700">{{ $incidencias->lastItem() ?? 0 }}</span> de <span class="font-bold text-slate-700">{{ $incidencias->total() }}</span> incidencias
                     </p>
-                    <div class="flex items-center space-x-1">
-                        <button class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-500 text-xs font-semibold hover:bg-slate-50 disabled:opacity-50">
-                            Anterior
-                        </button>
-                        <button class="px-3 py-1.5 bg-[#0C3B5E] text-white rounded-lg text-xs font-bold shadow-sm">
-                            1
-                        </button>
-                        <button class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-600 text-xs font-semibold hover:bg-slate-50">
-                            2
-                        </button>
-                        <button class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-600 text-xs font-semibold hover:bg-slate-50">
-                            3
-                        </button>
-                        <button class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-600 text-xs font-semibold hover:bg-slate-50">
-                            Siguiente
-                        </button>
+                    <div class="px-2">
+                        {{ $incidencias->links() }}
                     </div>
                 </div>
 

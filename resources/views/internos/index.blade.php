@@ -9,18 +9,32 @@
         font-weight: 600;
         font-size: 0.875rem;
         border-radius: 0.75rem;
-        box-shadow: 0 4px 6px -1px rgba(59,130,246,0.2), 0 2px 4px -2px rgba(59,130,246,0.2);
+        box-shadow: 0 4px 6px -1px rgba(53,92,125,0.2), 0 2px 4px -2px rgba(53,92,125,0.2);
         transition: background-color 0.15s ease, box-shadow 0.15s ease;
         cursor: pointer;
         text-decoration: none;
         width: auto;
     }
     .button-blue:hover {
-        background-color: #2563EB;
-        box-shadow: 0 10px 15px -3px rgba(59,130,246,0.25), 0 4px 6px -4px rgba(59,130,246,0.25);
+        background-color: #2a4a66;
+        box-shadow: 0 10px 15px -3px rgba(53,92,125,0.25), 0 4px 6px -4px rgba(53,92,125,0.25);
     }
     .button-blue:active {
-        background-color: #1D4ED8;
+        background-color: #1e3a52;
+    }
+
+    /* Colores sólidos puros del sistema sin opacidad */
+    .badge-rojo {
+        background-color: #D96C6C;
+        color: #ffffff;
+    }
+    .badge-naranja {
+        background-color: #E6A23C;
+        color: #ffffff;
+    }
+    .badge-verde {
+        background-color: #6C9A8B;
+        color: #ffffff;
     }
 </style>
 <x-app-layout>
@@ -115,14 +129,9 @@
                                 @php
                                     $initials = strtoupper(substr($interno->nombre, 0, 1) . substr($interno->apellido_paterno, 0, 1));
                                     $badgeClass = match($interno->estado) {
-                                        'En observación' => 'bg-amber-50 text-amber-700 border-amber-200',
-                                        'Atención especial' => 'bg-rose-50 text-rose-700 border-rose-200',
-                                        default => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                                    };
-                                    $dotClass = match($interno->estado) {
-                                        'En observación' => 'bg-amber-500',
-                                        'Atención especial' => 'bg-rose-500',
-                                        default => 'bg-emerald-500',
+                                        'En observación' => 'badge-naranja',
+                                        'Atención especial' => 'badge-rojo',
+                                        default => 'badge-verde',
                                     };
                                 @endphp
                                 <tr class="hover:bg-slate-50/60 transition duration-150">
@@ -136,8 +145,8 @@
                                         {{ $interno->fecha_nacimiento ? $interno->fecha_nacimiento->age . ' años' : 'N/A' }}
                                     </td>
                                     <td class="py-4 px-6">
-                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $badgeClass }} border">
-                                            <span class="w-1.5 h-1.5 rounded-full {{ $dotClass }} mr-1.5"></span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold {{ $badgeClass }}">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
                                             {{ $interno->estado ?? 'Estable' }}
                                         </span>
                                     </td>

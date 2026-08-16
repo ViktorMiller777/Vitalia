@@ -1,3 +1,43 @@
+<style>
+    /* Colores sólidos puros del sistema sin opacidad */
+    .badge-rojo {
+        background-color: #D96C6C;
+        color: #ffffff;
+    }
+    .badge-naranja {
+        background-color: #E6A23C;
+        color: #ffffff;
+    }
+    .badge-verde {
+        background-color: #6C9A8B;
+        color: #ffffff;
+    }
+
+    .card-rojo {
+        background-color: #ffffff;
+        border: 2px solid #D96C6C;
+    }
+    .text-rojo {
+        color: #D96C6C;
+    }
+
+    .card-naranja {
+        background-color: #ffffff;
+        border: 2px solid #E6A23C;
+    }
+    .text-naranja {
+        color: #E6A23C;
+    }
+
+    .card-verde {
+        background-color: #ffffff;
+        border: 2px solid #6C9A8B;
+    }
+    .text-verde {
+        color: #6C9A8B;
+    }
+</style>
+
 <x-app-layout>
     <div class="min-h-screen bg-slate-50 flex flex-col md:flex-row">
         
@@ -8,13 +48,13 @@
         <main class="flex-1 p-6 md:p-10 space-y-8">
 
             @if (session('success'))
-                <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-700 text-sm font-medium flex items-center justify-between">
+                <div class="p-4 badge-verde rounded-2xl text-sm font-semibold flex items-center justify-between shadow-sm">
                     <span>{{ session('success') }}</span>
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-rose-700 text-sm font-medium flex items-center justify-between">
+                <div class="p-4 badge-rojo rounded-2xl text-sm font-semibold flex items-center justify-between shadow-sm">
                     <span>{{ session('error') }}</span>
                 </div>
             @endif
@@ -118,31 +158,24 @@
                 <div class="space-y-3">
                     @forelse ($ultimasAlertas as $alerta)
                         @php
-                            $colorClasses = match($alerta->estado) {
-                                'Activa' => 'bg-rose-50/60 border-rose-200/80 hover:bg-rose-50',
-                                'Atendida' => 'bg-emerald-50/50 border-emerald-200/70 hover:bg-emerald-50',
-                                'Descartada' => 'bg-slate-50/60 border-slate-200/80 hover:bg-slate-50',
-                                default => 'bg-slate-50/60 border-slate-200/80 hover:bg-slate-50',
+                            $badgeClasses = match(strtolower($alerta->estado)) {
+                                'activa', 'pendiente' => 'badge-rojo',
+                                'atendida' => 'badge-naranja',
+                                'descartada', 'resuelta' => 'badge-verde',
+                                default => 'bg-slate-100 text-slate-700',
                             };
 
-                            $badgeClasses = match($alerta->estado) {
-                                'Activa' => 'text-rose-700 border-rose-200',
-                                'Atendida' => 'text-emerald-700 border-emerald-200',
-                                'Descartada' => 'text-slate-500 border-slate-200',
-                                default => 'text-slate-500 border-slate-200',
-                            };
-
-                            $icono = match($alerta->estado) {
-                                'Activa' => '🌡️',
-                                'Atendida' => '✅',
-                                'Descartada' => '🚫',
+                            $icono = match(strtolower($alerta->estado)) {
+                                'activa', 'pendiente' => '🌡️',
+                                'atendida' => '✅',
+                                'descartada', 'resuelta' => '🚫',
                                 default => '❓',
                             };
                         @endphp
 
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 {{ $colorClasses }} border rounded-2xl transition">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50/80 border border-slate-200 hover:bg-slate-100/60 rounded-2xl transition">
                             <div class="flex items-center space-x-3">
-                                <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-white text-lg flex items-center justify-center font-bold text-sm">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-white text-lg flex items-center justify-center font-bold text-sm shadow-sm">
                                     {{ $icono }}
                                 </span>
                                 <div>
@@ -154,8 +187,8 @@
                                     </p>
                                 </div>
                             </div>
-                            <span class="mt-2 sm:mt-0 text-xs font-semibold {{ $badgeClasses }} bg-white px-3 py-1 rounded-lg border text-center">
-                                {{ $alerta->estado }}
+                            <span class="mt-2 sm:mt-0 text-xs font-semibold {{ $badgeClasses }} px-3 py-1 rounded-full text-center">
+                                {{ ucfirst($alerta->estado) }}
                             </span>
                         </div>
                     @empty
@@ -165,7 +198,7 @@
 
                 <!-- Footer Link -->
                 <div class="mt-6 pt-3 border-t border-slate-100 text-left">
-                    <a href="{{ route('alertas.index') }}" class="inline-flex items-center text-sm font-semibold text-[#0C3B5E] hover:text-[#4EBA87] transition duration-200 group">
+                    <a href="{{ route('alertas.index') }}" class="inline-flex items-center text-sm font-semibold text-[#0C3B5E] hover:text-[#355C7D] transition duration-200 group">
                         <span>Ver todas las alertas</span>
                         <svg class="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -184,17 +217,19 @@
                 <div class="space-y-3">
                     @forelse ($ultimasIncidencias as $incidencia)
                         @php
-                            $dotColor = match($incidencia->prioridad) {
-                                'Urgente', 'Alta' => 'bg-rose-500',
-                                'Media' => 'bg-amber-500',
-                                default => 'bg-sky-500',
+                            $dotColor = match(strtolower($incidencia->prioridad)) {
+                                'urgente', 'alta' => 'badge-rojo',
+                                'media' => 'badge-naranja',
+                                default => 'badge-verde',
                             };
                             $fechaFormateada = $incidencia->fecha_hora ? $incidencia->fecha_hora->format('d/m/Y') : ($incidencia->created_at ? $incidencia->created_at->format('d/m/Y') : '');
                             $nombreInterno = $incidencia->resident ? ($incidencia->resident->nombre . ' ' . $incidencia->resident->apellido_paterno) : 'Interno #' . $incidencia->interno_id;
                         @endphp
                         <div class="flex flex-col md:flex-row md:items-center justify-between p-4 bg-slate-50/80 border border-slate-200 rounded-2xl hover:border-slate-300 transition duration-200 gap-4">
                             <div class="flex items-center space-x-3">
-                                <span class="flex-shrink-0 w-2.5 h-2.5 rounded-full {{ $dotColor }}"></span>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {{ $dotColor }}">
+                                    {{ ucfirst($incidencia->prioridad) }}
+                                </span>
                                 <span class="text-sm font-bold text-slate-800 tracking-wide">
                                     {{ $fechaFormateada }} - {{ $nombreInterno }} - {{ $incidencia->tipo_incidencia }}
                                 </span>
@@ -204,7 +239,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="estado" value="Aprobada">
-                                    <button type="submit" class="px-4 py-1.5 bg-[#4EBA87] hover:bg-emerald-600 text-white font-semibold text-xs rounded-xl shadow-sm transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#4EBA87]/40">
+                                    <button type="submit" style="background-color: #6C9A8B;" class="px-4 py-1.5 hover:opacity-90 text-white font-semibold text-xs rounded-xl shadow-sm transition duration-150 cursor-pointer">
                                         Aprobar
                                     </button>
                                 </form>
@@ -213,7 +248,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="estado" value="Rechazada">
-                                    <button type="submit" class="px-4 py-1.5 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 font-semibold text-xs rounded-xl transition duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-200">
+                                    <button type="submit" style="background-color: #D96C6C;" class="px-4 py-1.5 hover:opacity-90 text-white font-semibold text-xs rounded-xl shadow-sm transition duration-150 cursor-pointer">
                                         Rechazar
                                     </button>
                                 </form>

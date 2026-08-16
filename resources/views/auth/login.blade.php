@@ -88,25 +88,5 @@
                 </button>
             </div>
         </form>
-
-        <!-- Divider (O) -->
-        <div class="relative my-7 flex items-center justify-center">
-            <div class="w-full border-t border-slate-200"></div>
-            <span class="absolute bg-white px-4 text-xs font-semibold text-slate-400 tracking-wider">
-                O
-            </span>
-        </div>
-
-        <!-- Register Link Button (Crear cuenta) -->
-        <div>
-            @if (Route::has('register'))
-                <a 
-                    href="{{ route('register') }}" 
-                    class="w-full inline-flex items-center justify-center py-3 px-4 border border-slate-300 hover:border-[#0C3B5E] bg-white hover:bg-slate-50 text-slate-700 hover:text-[#0C3B5E] font-semibold text-sm rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-slate-200"
-                >
-                    Crear cuenta
-                </a>
-            @endif
-        </div>
     </div>
 </x-guest-layout>
