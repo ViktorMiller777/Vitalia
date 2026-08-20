@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\Alert;
 use App\Models\Incident;
 use App\Support\ApiResponse;
+use App\Support\ResidentAccess;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
@@ -83,6 +84,8 @@ class ResidentController extends Controller
         $search = $request->input('buscar') ?? $request->input('search');
         $estado = $request->input('estado');
 
+        $user = $request->user();
+
         $query = Resident::query()
             ->when($search, function ($q, $search) {
                 $q->where(function ($sub) use ($search) {
@@ -92,6 +95,10 @@ class ResidentController extends Controller
                 });
             })
             ->when($estado, fn ($q) => $q->where('estado', $estado))
+            ->when($user && $user->rol && $user->rol->nombre === 'Familiar', fn ($q) => $q->whereHas(
+                'familyLinks',
+                fn ($link) => $link->where('usuario_id', $user->id)->where('estado', 'active')
+            ))
             ->orderBy('id', 'desc');
 
         if ($request->wantsJson() || $request->is('api/*')) {
@@ -123,6 +130,8 @@ class ResidentController extends Controller
         }
 
         if ($request->wantsJson() || $request->is('api/*')) {
+            ResidentAccess::ensureCanAccess($resident->id, $request->user());
+
             return ApiResponse::success('GEN-0002', 'Recurso obtenido correctamente', new ResidentResource($resident));
         }
 

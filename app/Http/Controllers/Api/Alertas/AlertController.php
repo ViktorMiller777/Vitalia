@@ -12,6 +12,7 @@ use App\Models\Alert;
 use App\Models\Resident;
 use App\Models\User;
 use App\Support\ApiResponse;
+use App\Support\ResidentAccess;
 use Illuminate\Http\JsonResponse;
 
 class AlertController extends Controller
@@ -46,6 +47,8 @@ class AlertController extends Controller
             throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
         }
 
+        ResidentAccess::ensureCanAccess($resident->id, $request->user());
+
         $paginator = Alert::where('interno_id', $resident->id)
             ->when($request->filled('tipo_alerta'), fn ($query) => $query->where('tipo_alerta', $request->input('tipo_alerta')))
             ->when($request->filled('estado'), fn ($query) => $query->where('estado', $request->input('estado')))
@@ -54,13 +57,15 @@ class AlertController extends Controller
         return ApiResponse::paginated('GEN-0001', 'Listado obtenido correctamente', $paginator, fn (Alert $alert) => new AlertResource($alert));
     }
 
-    public function show(int $id): JsonResponse
+    public function show(\Illuminate\Http\Request $request, int $id): JsonResponse
     {
         $alert = Alert::find($id);
 
         if (! $alert) {
             throw new ApiException('ALT-1001', 'La alerta no existe', 404);
         }
+
+        ResidentAccess::ensureCanAccess($alert->interno_id, $request->user());
 
         return ApiResponse::success('GEN-0002', 'Recurso obtenido correctamente', new AlertResource($alert));
     }

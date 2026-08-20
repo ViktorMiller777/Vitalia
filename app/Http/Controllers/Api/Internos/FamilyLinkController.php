@@ -10,6 +10,7 @@ use App\Http\Resources\FamilyLinkResource;
 use App\Models\FamilyLink;
 use App\Models\Resident;
 use App\Support\ApiResponse;
+use App\Support\ResidentAccess;
 use Illuminate\Http\JsonResponse;
 
 class FamilyLinkController extends Controller
@@ -48,6 +49,8 @@ class FamilyLinkController extends Controller
         if (! $resident) {
             throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
         }
+
+        ResidentAccess::ensureCanAccess($resident->id, $request->user());
 
         $paginator = FamilyLink::with('usuario')
             ->where('interno_id', $resident->id)

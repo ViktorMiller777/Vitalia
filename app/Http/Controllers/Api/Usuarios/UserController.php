@@ -398,12 +398,19 @@ class UserController extends Controller
         return ApiResponse::paginated('GEN-0001', 'Listado obtenido correctamente', $paginator, fn (User $user) => new UserResource($user));
     }
 
-    public function show(int $id): JsonResponse
+    public function show(\Illuminate\Http\Request $request, int $id): JsonResponse
     {
         $user = User::find($id);
 
         if (! $user) {
             throw new ApiException('USR-1003', 'El usuario no existe', 404);
+        }
+
+        $authUser = $request->user();
+        $isAdmin = $authUser && $authUser->rol && $authUser->rol->nombre === 'Administrador';
+
+        if (! $isAdmin && (! $authUser || $authUser->id !== $user->id)) {
+            throw new ApiException('AUTH-1003', 'No tienes permiso para realizar esta acción', 403);
         }
 
         return ApiResponse::success('GEN-0002', 'Recurso obtenido correctamente', new UserResource($user));
