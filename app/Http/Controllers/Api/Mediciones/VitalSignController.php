@@ -8,6 +8,7 @@ use App\Http\Requests\Api\Mediciones\ListVitalSignsRequest;
 use App\Http\Requests\Api\Mediciones\StoreVitalSignRequest;
 use App\Http\Resources\VitalSignResource;
 use App\Models\Resident;
+use App\Models\User;
 use App\Models\VitalSign;
 use App\Support\ApiResponse;
 use App\Support\ResidentAccess;
@@ -15,6 +16,13 @@ use Illuminate\Http\JsonResponse;
 
 class VitalSignController extends Controller
 {
+    /**
+     * Registra una lectura de signos vitales.
+     *
+     * Acepta tanto personal autenticado (guard sanctum, rol Administrador o
+     * Cuidador) como dispositivos IoT autenticados por API key (guard
+     * device-key, p. ej. un ESP32 con sensores), igual que AlertController::store.
+     */
     public function store(StoreVitalSignRequest $request, int $id): JsonResponse
     {
         $resident = Resident::find($id);
@@ -23,11 +31,17 @@ class VitalSignController extends Controller
             throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
         }
 
+        $user = $request->user();
+
+        if ($user instanceof User && (! $user->rol || ! in_array($user->rol->nombre, ['Administrador', 'Cuidador'], true))) {
+            throw new ApiException('AUTH-1003', 'No tienes permiso para realizar esta acción', 403);
+        }
+
         $vitalSign = VitalSign::create($request->only(
             'presion_arterial', 'frecuencia_cardiaca', 'temperatura', 'saturacion_oxigeno', 'glucosa', 'calidad_aire'
         ) + [
             'interno_id' => $resident->id,
-            'created_by' => $request->user()->id,
+            'created_by' => $user instanceof User ? $user->id : null,
         ]);
 
         return ApiResponse::success('MDC-0001', 'Signos vitales guardados', ['id' => $vitalSign->id], 201);

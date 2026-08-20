@@ -27,6 +27,9 @@ Route::prefix('auth')->group(function () {
 Route::post('internos/{id}/alertas', [AlertController::class, 'store'])
     ->middleware('auth:sanctum,device-key');
 
+Route::post('internos/{id}/mediciones', [VitalSignController::class, 'store'])
+    ->middleware('auth:sanctum,device-key');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('roles')->group(function () {
         Route::get('/', [RoleController::class, 'index']);
@@ -73,7 +76,6 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('{id}/mediciones')->group(function () {
-            Route::post('/', [VitalSignController::class, 'store'])->middleware('role:Administrador,Cuidador');
             Route::get('/', [VitalSignController::class, 'index']);
         });
 
