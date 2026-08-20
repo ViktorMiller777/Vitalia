@@ -14,6 +14,7 @@ class VitalSign extends Model
 
     protected $fillable = [
         'interno_id',
+        'dispositivo_id',
         'presion_arterial',
         'frecuencia_cardiaca',
         'temperatura',

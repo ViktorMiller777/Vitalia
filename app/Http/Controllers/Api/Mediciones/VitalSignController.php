@@ -47,6 +47,40 @@ class VitalSignController extends Controller
         return ApiResponse::success('MDC-0001', 'Signos vitales guardados', ['id' => $vitalSign->id], 201);
     }
 
+    /**
+     * Registra una lectura de signos vitales enviada por un ESP32 identificado
+     * por su propio id de dispositivo (no ligado a un interno).
+     */
+    public function storeForDevice(StoreVitalSignRequest $request, string $dispositivoId): JsonResponse
+    {
+        $user = $request->user();
+
+        $vitalSign = VitalSign::create($request->only(
+            'presion_arterial', 'frecuencia_cardiaca', 'temperatura', 'saturacion_oxigeno', 'glucosa', 'calidad_aire'
+        ) + [
+            'dispositivo_id' => $dispositivoId,
+            'created_by' => $user instanceof User ? $user->id : null,
+        ]);
+
+        return ApiResponse::success('MDC-0001', 'Signos vitales guardados', ['id' => $vitalSign->id], 201);
+    }
+
+    /**
+     * Devuelve la última lectura enviada por un dispositivo (ESP32) dado.
+     */
+    public function latestForDevice(string $dispositivoId): JsonResponse
+    {
+        $vitalSign = VitalSign::where('dispositivo_id', $dispositivoId)
+            ->latest('created_at')
+            ->first();
+
+        if (! $vitalSign) {
+            throw new ApiException('MDC-1006', 'No hay mediciones registradas para este dispositivo', 404);
+        }
+
+        return ApiResponse::success('GEN-0002', 'Recurso obtenido correctamente', new VitalSignResource($vitalSign));
+    }
+
     public function index(ListVitalSignsRequest $request, int $id): JsonResponse
     {
         $resident = Resident::find($id);

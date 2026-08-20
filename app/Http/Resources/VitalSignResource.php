@@ -15,6 +15,7 @@ class VitalSignResource extends JsonResource
         return [
             'id' => $this->id,
             'interno_id' => $this->interno_id,
+            'dispositivo_id' => $this->dispositivo_id,
             'presion_arterial' => $this->presion_arterial,
             'frecuencia_cardiaca' => $this->frecuencia_cardiaca,
             'temperatura' => $this->temperatura === null ? null : (float) $this->temperatura,

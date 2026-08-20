@@ -30,6 +30,8 @@ Route::post('internos/{id}/alertas', [AlertController::class, 'store'])
 Route::post('internos/{id}/mediciones', [VitalSignController::class, 'store'])
     ->middleware('auth:sanctum,device-key');
 
+Route::post('dispositivos/{dispositivoId}/mediciones', [VitalSignController::class, 'storeForDevice']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('roles')->group(function () {
         Route::get('/', [RoleController::class, 'index']);
@@ -96,6 +98,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('mediciones/{medicionId}', [VitalSignController::class, 'show']);
+
+    Route::get('dispositivos/{dispositivoId}/mediciones/ultima', [VitalSignController::class, 'latestForDevice']);
 
     Route::prefix('notificaciones')->group(function () {
         Route::get('/', [NotificationController::class, 'index']);
