@@ -167,34 +167,27 @@
             </form>
 
             <!-- TARJETAS ESTADÍSTICAS -->
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                 <!-- Total -->
-                 <div class="flex gap-4">
-                    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex-1">
-                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total</p>
-                        <p class="text-3xl font-extrabold text-[#0C3B5E]">{{ $totalIncidencias ?? \App\Models\Incident::count() }}</p>
-                    </div>
-                    <!-- Pendientes -->
-                    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex-1">
-                        <p class="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1">Pendientes</p>
-                        <p class="text-3xl font-extrabold text-amber-600">{{ $pendientes ?? \App\Models\Incident::whereIn('estado', ['Pendiente', 'pendiente'])->count() }}</p>
-                    </div>
-                 </div>
-
-                 <div class="flex gap-4">
-                        <!-- Aprobadas -->
-                    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex-1">
-                        <p class="text-xs font-semibold text-emerald-500 uppercase tracking-wider mb-1">Aprobadas</p>
-                        <p class="text-3xl font-extrabold text-emerald-600">{{ $aprobadas ?? \App\Models\Incident::whereIn('estado', ['Aprobada', 'aprobada'])->count() }}</p>
-                    </div>
-                    <!-- Rechazadas -->
-                    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex-1">
-                        <p class="text-xs font-semibold text-rose-400 uppercase tracking-wider mb-1">Rechazadas</p>
-                        <p class="text-3xl font-extrabold text-rose-600">{{ $rechazadas ?? \App\Models\Incident::whereIn('estado', ['Rechazada', 'rechazada'])->count() }}</p>
-                    </div>
-                 </div>
-                
-                
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total</p>
+                    <p class="text-3xl font-extrabold text-[#0C3B5E]">{{ $totalIncidencias ?? \App\Models\Incident::count() }}</p>
+                </div>
+                <!-- Pendientes -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
+                    <p class="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1">Pendientes</p>
+                    <p class="text-3xl font-extrabold text-amber-600">{{ $pendientes ?? \App\Models\Incident::whereIn('estado', ['Pendiente', 'pendiente'])->count() }}</p>
+                </div>
+                <!-- Aprobadas -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
+                    <p class="text-xs font-semibold text-emerald-500 uppercase tracking-wider mb-1">Aprobadas</p>
+                    <p class="text-3xl font-extrabold text-emerald-600">{{ $aprobadas ?? \App\Models\Incident::whereIn('estado', ['Aprobada', 'aprobada'])->count() }}</p>
+                </div>
+                <!-- Rechazadas -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
+                    <p class="text-xs font-semibold text-rose-400 uppercase tracking-wider mb-1">Rechazadas</p>
+                    <p class="text-3xl font-extrabold text-rose-600">{{ $rechazadas ?? \App\Models\Incident::whereIn('estado', ['Rechazada', 'rechazada'])->count() }}</p>
+                </div>
                 <!-- Resueltas -->
                 <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm">
                     <p class="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-1">Resueltas</p>
