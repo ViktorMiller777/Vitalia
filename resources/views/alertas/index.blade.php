@@ -49,26 +49,14 @@
         color: #ffffff;
     }
 
-    .card-rojo {
-        background-color: #ffffff;
-        border: 2px solid #D96C6C;
-    }
     .text-rojo {
         color: #D96C6C;
     }
 
-    .card-naranja {
-        background-color: #ffffff;
-        border: 2px solid #E6A23C;
-    }
     .text-naranja {
         color: #E6A23C;
     }
 
-    .card-verde {
-        background-color: #ffffff;
-        border: 2px solid #6C9A8B;
-    }
     .text-verde {
         color: #6C9A8B;
     }
@@ -142,15 +130,15 @@
                         <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Activas</p>
                         <p class="text-3xl font-extrabold text-[#0C3B5E]">{{ $activas ?? \App\Models\Alert::whereIn('estado', ['Activa', 'activa', 'Pendiente', 'pendiente'])->count() }}</p>
                     </div>
-                    <div class="flex-1 rounded-xl p-4 card-naranja">
+                    <div class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-4">
                         <p class="text-xs font-semibold text-naranja uppercase tracking-wider mb-1">Atendidas</p>
                         <p class="text-3xl font-extrabold text-naranja">{{ $atendidas ?? \App\Models\Alert::whereIn('estado', ['Atendida', 'atendida'])->count() }}</p>
                     </div>
-                    <div class="flex-1 rounded-xl p-4 card-verde">
+                    <div class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-4">
                         <p class="text-xs font-semibold text-verde uppercase tracking-wider mb-1">Descartadas</p>
                         <p class="text-3xl font-extrabold text-verde">{{ $resueltas ?? \App\Models\Alert::whereIn('estado', ['Resuelta', 'resuelta'])->count() }}</p>
                     </div>
-                    <div class="flex-1 rounded-xl p-4 card-rojo">
+                    <div class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-4">
                         <p class="text-xs font-semibold text-rojo uppercase tracking-wider mb-1">Críticas</p>
                         <p class="text-3xl font-extrabold text-rojo">{{ $criticas ?? \App\Models\Alert::whereIn('estado', ['Critica', 'critica', 'Crítica'])->count() }}</p>
                     </div>
@@ -241,11 +229,8 @@
 
     <script>
         function selectAlert(row, id) {
-            // Remover selección previa
             document.querySelectorAll('.alert-row').forEach(r => r.classList.remove('selected', 'bg-blue-50/40'));
-            // Marcar fila seleccionada
             row.classList.add('selected');
-            // Mostrar panel de detalle
             document.getElementById('detail-panel').classList.add('active');
         }
     </script>

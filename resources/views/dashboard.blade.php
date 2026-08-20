@@ -81,7 +81,7 @@
                 </a>
 
                 <!-- Usuarios totales -->
-                <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-200">
+                <a href="{{ route('cuidadores.index') }}" class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-200">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Usuarios totales</span>
                         <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
@@ -94,10 +94,10 @@
                         <span class="text-3xl font-extrabold text-[#0C3B5E]">{{ $usuariosTotales }}</span>
                         <span class="ml-2 text-xs font-medium text-slate-400">Personal & Admins</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- Incidencias pendientes -->
-                <div class="bg-white border border-rose-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-200 relative overflow-hidden">
+                <a href="{{ route('incidencias.index') }}" class="bg-white border border-rose-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-200 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-2 h-full bg-rose-500"></div>
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Incidencias pendientes</span>
@@ -111,7 +111,7 @@
                         <span class="text-3xl font-extrabold text-rose-600">{{ $incidenciasPendientes}}</span>
                         <span class="ml-2 text-xs font-semibold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full">Requieren atención</span>
                     </div>
-                </div>
+                </a>
 
                 <!-- Medicamentos activos -->
                 <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm hover:shadow-md transition duration-200">
