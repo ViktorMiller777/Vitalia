@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\Incidencias\IncidentController;
 use App\Http\Controllers\Api\Internos\ResidentController;
 use App\Http\Controllers\Api\Usuarios\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/login');
+
+Route::middleware('auth')->group(function () {
 
 //DASHBOARD DEL ADMINISTRADOR
 Route::get('/dashboard',function(){
@@ -49,8 +52,6 @@ Route::get('/editar-familiar/{id?}', [UserController::class, 'familiarEdit'])->n
 Route::put('/editar-familiar/{id}', [UserController::class, 'familiarUpdate'])->name('familiar.update');
 
 
-
-use App\Http\Controllers\Api\Incidencias\IncidentController;
 
 Route::get('/incidencias', function (\Illuminate\Http\Request $request) {
     $query = \App\Models\Incident::with(['resident', 'cuidador'])->latest('id');
@@ -132,10 +133,10 @@ Route::get('/dashboard', [ResidentController::class, 'count'])->name('dashboard'
 //     return view('dashboard');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
 
 require __DIR__.'/auth.php';

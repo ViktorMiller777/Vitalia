@@ -10,6 +10,7 @@ use App\Http\Resources\ClinicalHistoryResource;
 use App\Models\ClinicalHistory;
 use App\Models\Resident;
 use App\Support\ApiResponse;
+use App\Support\ResidentAccess;
 use Illuminate\Http\JsonResponse;
 
 class ClinicalHistoryController extends Controller
@@ -34,13 +35,15 @@ class ClinicalHistoryController extends Controller
         return ApiResponse::success('INT-0003', 'Historial clínico creado', ['id' => $history->id], 201);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(\Illuminate\Http\Request $request, int $id): JsonResponse
     {
         $resident = Resident::find($id);
 
         if (! $resident) {
             throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
         }
+
+        ResidentAccess::ensureCanAccess($resident->id, $request->user());
 
         $history = $resident->clinicalHistory;
 

@@ -12,6 +12,7 @@ use App\Models\Medication;
 use App\Models\Prescription;
 use App\Models\Resident;
 use App\Support\ApiResponse;
+use App\Support\ResidentAccess;
 use Illuminate\Http\JsonResponse;
 
 class PrescriptionController extends Controller
@@ -48,6 +49,8 @@ class PrescriptionController extends Controller
         if (! $resident) {
             throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
         }
+
+        ResidentAccess::ensureCanAccess($resident->id, $request->user());
 
         $paginator = Prescription::where('interno_id', $resident->id)
             ->when($request->filled('estado'), fn ($query) => $query->where('estado', $request->input('estado')))

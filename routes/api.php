@@ -73,7 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
         });
 
         Route::prefix('{id}/mediciones')->group(function () {
-            Route::post('/', [VitalSignController::class, 'store']);
+            Route::post('/', [VitalSignController::class, 'store'])->middleware('role:Administrador,Cuidador');
             Route::get('/', [VitalSignController::class, 'index']);
         });
 
@@ -107,7 +107,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('incidencias')->group(function () {
         Route::get('{id}', [IncidentController::class, 'show']);
-        Route::put('{id}', [IncidentController::class, 'update']);
+        Route::put('{id}', [IncidentController::class, 'update'])->middleware('role:Administrador,Cuidador');
         Route::patch('{id}/estado', [IncidentController::class, 'updateStatus'])->middleware('role:Administrador');
     });
 });

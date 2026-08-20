@@ -12,6 +12,7 @@ use App\Http\Resources\IncidentResource;
 use App\Models\Incident;
 use App\Models\Resident;
 use App\Support\ApiResponse;
+use App\Support\ResidentAccess;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
@@ -35,14 +36,26 @@ class IncidentController extends Controller
             'estado' => 'Pendiente',
         ]);
 
-        return ApiResponse::created('INC-0001', 'Incidencia registrada correctamente', new IncidentResource($incident->load(['resident', 'cuidador'])));
+        return ApiResponse::success('INC-0001', 'Incidencia registrada correctamente', new IncidentResource($incident->load(['resident', 'cuidador'])), 201);
     }
 
-    public function index(ListIncidentsRequest $request): JsonResponse
+    public function index(ListIncidentsRequest $request, ?int $id = null): JsonResponse
     {
         $query = Incident::query()->with(['resident', 'cuidador', 'administrador']);
 
-        if ($request->has('interno_id')) {
+        if ($id !== null) {
+            $resident = Resident::find($id);
+
+            if (! $resident) {
+                throw new ApiException('RES-1001', 'El interno no existe', 404);
+            }
+
+            ResidentAccess::ensureCanAccess($resident->id, $request->user());
+
+            $query->where('interno_id', $resident->id);
+        } elseif ($request->has('interno_id')) {
+            ResidentAccess::ensureCanAccess((int) $request->query('interno_id'), $request->user());
+
             $query->where('interno_id', $request->query('interno_id'));
         }
 
@@ -63,19 +76,22 @@ class IncidentController extends Controller
         }
 
         return ApiResponse::paginated(
+            'GEN-0001',
+            'Incidencias obtenidas correctamente',
             $query->latest()->paginate($request->perPage()),
-            fn ($incident) => new IncidentResource($incident),
-            'Incidencias obtenidas correctamente'
+            fn ($incident) => new IncidentResource($incident)
         );
     }
 
-    public function show(int $id): JsonResponse
+    public function show(\Illuminate\Http\Request $request, int $id): JsonResponse
     {
         $incident = Incident::find($id);
 
         if (! $incident) {
             throw new ApiException('INC-1001', 'La incidencia no existe', 404);
         }
+
+        ResidentAccess::ensureCanAccess($incident->interno_id, $request->user());
 
         return ApiResponse::success('GEN-0002', 'Recurso obtenido correctamente', new IncidentResource($incident));
     }
@@ -87,6 +103,8 @@ class IncidentController extends Controller
         if (! $incident) {
             throw new ApiException('INC-1001', 'La incidencia no existe', 404);
         }
+
+        ResidentAccess::ensureCanAccess($incident->interno_id, $request->user());
 
         if ($incident->estado !== 'Pendiente' && $incident->estado !== 'pendiente') {
             throw new ApiException('INC-1003', 'Esta incidencia ya fue revisada y no se puede modificar', 409);

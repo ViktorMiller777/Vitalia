@@ -10,6 +10,7 @@ use App\Http\Resources\VitalSignResource;
 use App\Models\Resident;
 use App\Models\VitalSign;
 use App\Support\ApiResponse;
+use App\Support\ResidentAccess;
 use Illuminate\Http\JsonResponse;
 
 class VitalSignController extends Controller
@@ -40,6 +41,8 @@ class VitalSignController extends Controller
             throw new ApiException('INT-1001', 'El interno no existe en el sistema', 404);
         }
 
+        ResidentAccess::ensureCanAccess($resident->id, $request->user());
+
         $paginator = VitalSign::where('interno_id', $resident->id)
             ->when($request->filled('from'), fn ($query) => $query->where('created_at', '>=', $request->input('from')))
             ->when($request->filled('to'), fn ($query) => $query->where('created_at', '<=', $request->input('to')))
@@ -48,13 +51,15 @@ class VitalSignController extends Controller
         return ApiResponse::paginated('GEN-0001', 'Listado obtenido correctamente', $paginator, fn (VitalSign $vitalSign) => new VitalSignResource($vitalSign));
     }
 
-    public function show(int $medicionId): JsonResponse
+    public function show(\Illuminate\Http\Request $request, int $medicionId): JsonResponse
     {
         $vitalSign = VitalSign::find($medicionId);
 
         if (! $vitalSign) {
             throw new ApiException('MDC-1002', 'El registro de medición no existe', 404);
         }
+
+        ResidentAccess::ensureCanAccess($vitalSign->interno_id, $request->user());
 
         return ApiResponse::success('GEN-0002', 'Recurso obtenido correctamente', new VitalSignResource($vitalSign));
     }

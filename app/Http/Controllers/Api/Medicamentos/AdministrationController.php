@@ -10,6 +10,7 @@ use App\Http\Resources\MedicationAdministrationResource;
 use App\Models\MedicationAdministration;
 use App\Models\Prescription;
 use App\Support\ApiResponse;
+use App\Support\ResidentAccess;
 use Illuminate\Http\JsonResponse;
 
 class AdministrationController extends Controller
@@ -44,6 +45,8 @@ class AdministrationController extends Controller
         if (! $prescription) {
             throw new ApiException('MED-1002', 'La prescripción no existe', 404);
         }
+
+        ResidentAccess::ensureCanAccess($id, $request->user());
 
         $paginator = MedicationAdministration::where('prescripcion_id', $prescription->id)
             ->paginate($request->perPage(), page: $request->page());
