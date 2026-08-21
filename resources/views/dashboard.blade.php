@@ -140,8 +140,8 @@
                         </div>
                     </div>
                     <div class="mt-3 flex items-baseline">
-                        <span class="text-3xl font-extrabold text-[#0C3B5E]">3</span>
-                        <span class="ml-2 text-xs font-medium text-slate-400">Este mes</span>
+                        <span class="text-3xl font-extrabold text-[#0C3B5E]">{{ $altasRecientes ?? 0 }}</span>
+                        <span class="ml-2 text-xs font-medium text-slate-400">Últimos 3 días</span>
                     </div>
                 </div>
             </div>
@@ -158,34 +158,23 @@
                 <div class="space-y-3">
                     @forelse ($ultimasAlertas as $alerta)
                         @php
-                            $badgeClasses = match(strtolower($alerta->estado)) {
+                            $st = strtolower($alerta->estado ?? '');
+                            $badgeClasses = match($st) {
                                 'activa', 'pendiente' => 'badge-rojo',
                                 'atendida' => 'badge-naranja',
                                 'descartada', 'resuelta' => 'badge-verde',
                                 default => 'bg-slate-100 text-slate-700',
                             };
-
-                            $icono = match(strtolower($alerta->estado)) {
-                                'activa', 'pendiente' => '🌡️',
-                                'atendida' => '✅',
-                                'descartada', 'resuelta' => '🚫',
-                                default => '❓',
-                            };
                         @endphp
 
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-slate-50/80 border border-slate-200 hover:bg-slate-100/60 rounded-2xl transition">
-                            <div class="flex items-center space-x-3">
-                                <span class="flex-shrink-0 w-8 h-8 rounded-xl bg-white text-lg flex items-center justify-center font-bold text-sm shadow-sm">
-                                    {{ $icono }}
-                                </span>
-                                <div>
-                                    <h3 class="text-sm font-bold text-slate-800">
-                                        {{ $alerta->tipo_alerta }}@if($alerta->interno): Interno {{ $alerta->interno->id }}@endif
-                                    </h3>
-                                    <p class="text-xs text-slate-500 mt-0.5">
-                                        {{ $alerta->descripcion }} • {{ optional($alerta->created_at)->diffForHumans() ?? 'Sin fecha' }}
-                                    </p>
-                                </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800">
+                                    {{ $alerta->tipo_alerta }}@if($alerta->interno): Interno {{ $alerta->interno->id }}@endif
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">
+                                    {{ $alerta->descripcion }} • {{ optional($alerta->created_at)->diffForHumans() ?? 'Sin fecha' }}
+                                </p>
                             </div>
                             <span class="mt-2 sm:mt-0 text-xs font-semibold {{ $badgeClasses }} px-3 py-1 rounded-full text-center">
                                 {{ ucfirst($alerta->estado) }}
@@ -277,8 +266,8 @@
                 <!-- Gráfico 1: Incidencias por tipo -->
                 <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-sm font-bold text-[#0C3B5E]">Incidencias por tipo (gráfico)</h3>
-                        <span class="text-[11px] font-semibold text-slate-400 uppercase">Mensual</span>
+                        <h3 class="text-sm font-bold text-[#0C3B5E]">Incidencias por tipo</h3>
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase">General</span>
                     </div>
                     <div class="relative h-60 w-full flex items-center justify-center">
                         <canvas id="chartIncidencias"></canvas>
@@ -288,7 +277,7 @@
                 <!-- Gráfico 2: Alertas por tipo -->
                 <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-sm font-bold text-[#0C3B5E]">Alertas por tipo (gráfico)</h3>
+                        <h3 class="text-sm font-bold text-[#0C3B5E]">Alertas por tipo</h3>
                         <span class="text-[11px] font-semibold text-slate-400 uppercase">Distribución</span>
                     </div>
                     <div class="relative h-60 w-full flex items-center justify-center">
@@ -296,90 +285,15 @@
                     </div>
                 </div>
 
-                <!-- Gráfico 3: Mediciones por interno -->
+                <!-- Gráfico 3: Mediciones registradas -->
                 <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-sm font-bold text-[#0C3B5E]">Mediciones por interno (gráfico)</h3>
-                        <span class="text-[11px] font-semibold text-slate-400 uppercase">Semanal</span>
+                        <h3 class="text-sm font-bold text-[#0C3B5E]">Mediciones de signos vitales</h3>
+                        <span class="text-[11px] font-semibold text-slate-400 uppercase">Últimos 7 días</span>
                     </div>
                     <div class="relative h-60 w-full flex items-center justify-center">
                         <canvas id="chartMediciones"></canvas>
                     </div>
-                </div>
-            </div>
-
-            <!-- 5. ÚLTIMAS ACTIVIDADES SECTION -->
-            <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm">
-                <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-100">
-                    <h2 class="text-lg font-bold text-[#0C3B5E] tracking-tight">Últimas actividades</h2>
-                    <span class="text-xs font-semibold text-slate-400">Hoy</span>
-                </div>
-
-                <div class="space-y-4">
-                    <!-- Actividad 1 -->
-                    <div class="flex items-start space-x-3.5">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-slate-100 text-[#0C3B5E] flex items-center justify-center font-bold text-xs">
-                            10:30
-                        </div>
-                        <div class="pt-1">
-                            <p class="text-sm font-semibold text-slate-800">Cuidador registró medición</p>
-                            <p class="text-xs text-slate-500">Signos vitales de Interno 4 actualizados</p>
-                        </div>
-                    </div>
-
-                    <!-- Actividad 2 -->
-                    <div class="flex items-start space-x-3.5">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-slate-100 text-[#0C3B5E] flex items-center justify-center font-bold text-xs">
-                            09:45
-                        </div>
-                        <div class="pt-1">
-                            <p class="text-sm font-semibold text-slate-800">Medicamento administrado</p>
-                            <p class="text-xs text-slate-500">Dosis matutina de Interno 2 completada</p>
-                        </div>
-                    </div>
-
-                    <!-- Actividad 3 -->
-                    <div class="flex items-start space-x-3.5">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-slate-100 text-[#0C3B5E] flex items-center justify-center font-bold text-xs">
-                            09:00
-                        </div>
-                        <div class="pt-1">
-                            <p class="text-sm font-semibold text-slate-800">Incidencia aprobada</p>
-                            <p class="text-xs text-slate-500">Incidencia #104 autorizada por administración</p>
-                        </div>
-                    </div>
-
-                    <!-- Actividad 4 -->
-                    <div class="flex items-start space-x-3.5">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-slate-100 text-[#0C3B5E] flex items-center justify-center font-bold text-xs">
-                            08:30
-                        </div>
-                        <div class="pt-1">
-                            <p class="text-sm font-semibold text-slate-800">Alerta generada</p>
-                            <p class="text-xs text-slate-500">Alerta preventiva de temperatura para Interno 3</p>
-                        </div>
-                    </div>
-
-                    <!-- Actividad 5 -->
-                    <div class="flex items-start space-x-3.5">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-xl bg-slate-100 text-[#0C3B5E] flex items-center justify-center font-bold text-xs">
-                            08:00
-                        </div>
-                        <div class="pt-1">
-                            <p class="text-sm font-semibold text-slate-800">Nuevo usuario registrado</p>
-                            <p class="text-xs text-slate-500">Nuevo personal de enfermería registrado en sistema</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Footer Link -->
-                <div class="mt-6 pt-3 border-t border-slate-100 text-left">
-                    <a href="#" class="inline-flex items-center text-sm font-semibold text-[#0C3B5E] hover:text-[#4EBA87] transition duration-200 group">
-                        <span>Ver todas las actividades</span>
-                        <svg class="w-4 h-4 ml-1.5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
-                    </a>
                 </div>
             </div>
 
@@ -395,11 +309,11 @@
                 new Chart(ctxIncidencias, {
                     type: 'bar',
                     data: {
-                        labels: ['Caída', 'Fiebre', 'Dolor', 'Presión', 'Otro'],
+                        labels: @json($chartIncidenciasLabels ?? ['Sin registros']),
                         datasets: [{
                             label: 'Incidencias',
-                            data: [8, 5, 6, 3, 2],
-                            backgroundColor: ['#0C3B5E', '#4EBA87', '#38BDF8', '#F59E0B', '#94A3B8'],
+                            data: @json($chartIncidenciasData ?? [0]),
+                            backgroundColor: ['#0C3B5E', '#4EBA87', '#38BDF8', '#F59E0B', '#94A3B8', '#E6A23C', '#D96C6C', '#6C9A8B'],
                             borderRadius: 8
                         }]
                     },
@@ -410,7 +324,7 @@
                             legend: { display: false }
                         },
                         scales: {
-                            y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
+                            y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#F1F5F9' } },
                             x: { grid: { display: false } }
                         }
                     }
@@ -423,10 +337,10 @@
                 new Chart(ctxAlertas, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Temperatura', 'Glucosa', 'Presión', 'Frecuencia'],
+                        labels: @json($chartAlertasLabels ?? ['Sin registros']),
                         datasets: [{
-                            data: [40, 25, 20, 15],
-                            backgroundColor: ['#EF4444', '#F59E0B', '#0C3B5E', '#4EBA87'],
+                            data: @json($chartAlertasData ?? [0]),
+                            backgroundColor: ['#EF4444', '#F59E0B', '#0C3B5E', '#4EBA87', '#6C9A8B', '#38BDF8', '#8B5CF6'],
                             borderWidth: 2,
                             borderColor: '#ffffff'
                         }]
@@ -442,16 +356,16 @@
                 });
             }
 
-            // Chart 3: Mediciones por interno (Line Chart)
+            // Chart 3: Mediciones por día (Line Chart)
             const ctxMediciones = document.getElementById('chartMediciones');
             if (ctxMediciones) {
                 new Chart(ctxMediciones, {
                     type: 'line',
                     data: {
-                        labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+                        labels: @json($chartMedicionesLabels ?? []),
                         datasets: [{
                             label: 'Mediciones completadas',
-                            data: [12, 19, 15, 22, 20, 18, 25],
+                            data: @json($chartMedicionesData ?? []),
                             borderColor: '#4EBA87',
                             backgroundColor: 'rgba(78, 186, 135, 0.1)',
                             borderWidth: 3,
@@ -468,7 +382,7 @@
                             legend: { display: false }
                         },
                         scales: {
-                            y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
+                            y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: '#F1F5F9' } },
                             x: { grid: { display: false } }
                         }
                     }

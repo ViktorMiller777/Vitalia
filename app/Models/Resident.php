@@ -65,4 +65,9 @@ class Resident extends Model
     {
         return $this->hasMany(VitalSign::class, 'interno_id');
     }
+
+    public function mediciones(): HasMany
+    {
+        return $this->hasMany(VitalSign::class, 'interno_id');
+    }
 }
