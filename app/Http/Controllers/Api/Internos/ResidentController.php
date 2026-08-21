@@ -12,6 +12,7 @@ use App\Models\Resident;
 use App\Models\User;
 use App\Models\Alert;
 use App\Models\Incident;
+use App\Models\VitalSign;
 use App\Support\ApiResponse;
 use App\Support\ResidentAccess;
 use Illuminate\Http\RedirectResponse;
@@ -25,6 +26,46 @@ class ResidentController extends Controller
 
     public function count()
     {
+        // 1. Incidencias por Tipo
+        $incidenciasPorTipo = Incident::selectRaw('tipo_incidencia, count(*) as total')
+            ->groupBy('tipo_incidencia')
+            ->pluck('total', 'tipo_incidencia');
+
+        $chartIncidenciasLabels = $incidenciasPorTipo->keys()->toArray();
+        $chartIncidenciasData = $incidenciasPorTipo->values()->toArray();
+
+        if (empty($chartIncidenciasLabels)) {
+            $chartIncidenciasLabels = ['Sin incidencias'];
+            $chartIncidenciasData = [0];
+        }
+
+        // 2. Alertas por Tipo
+        $alertasPorTipo = Alert::selectRaw('tipo_alerta, count(*) as total')
+            ->groupBy('tipo_alerta')
+            ->pluck('total', 'tipo_alerta');
+
+        $chartAlertasLabels = $alertasPorTipo->keys()->toArray();
+        $chartAlertasData = $alertasPorTipo->values()->toArray();
+
+        if (empty($chartAlertasLabels)) {
+            $chartAlertasLabels = ['Sin alertas'];
+            $chartAlertasData = [0];
+        }
+
+        // 3. Mediciones por día (Últimos 7 días)
+        $diasSemana = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        $chartMedicionesLabels = [];
+        $chartMedicionesData = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $fecha = now()->subDays($i);
+            $nombreDia = $diasSemana[$fecha->dayOfWeek];
+            $count = VitalSign::whereDate('created_at', $fecha->toDateString())->count();
+
+            $chartMedicionesLabels[] = $nombreDia . ' ' . $fecha->format('d/m');
+            $chartMedicionesData[] = $count;
+        }
+
         return view('dashboard', [
             'internosActivos' => Resident::where('estado', 'Estable')->count(),
             'usuariosTotales' => User::where('estado', 'active')->count(),
@@ -33,6 +74,13 @@ class ResidentController extends Controller
             'ultimasAlertas' => Alert::with('Resident')->latest()->take(3)->get(),
             'alertasPendientes' => Alert::whereIn('estado', ['Pendiente', 'pendiente', 'Activa', 'activa'])->count(),
             'medicamentosActivos' => MedicationController::countActive(),
+            'altasRecientes' => Resident::where('created_at', '>=', now()->subDays(3))->count(),
+            'chartIncidenciasLabels' => $chartIncidenciasLabels,
+            'chartIncidenciasData' => $chartIncidenciasData,
+            'chartAlertasLabels' => $chartAlertasLabels,
+            'chartAlertasData' => $chartAlertasData,
+            'chartMedicionesLabels' => $chartMedicionesLabels,
+            'chartMedicionesData' => $chartMedicionesData,
         ]);
     }
     
@@ -116,6 +164,9 @@ class ResidentController extends Controller
         $resident = Resident::with([
             'clinicalHistory', 
             'medications.medication', 
+            'vitalSigns' => function ($q) {
+                $q->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+            },
             'familyLinks.user',
             'alerts.usuario',
             'incidents.cuidador',

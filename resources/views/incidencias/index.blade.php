@@ -80,6 +80,42 @@
     .text-verde {
         color: #6C9A8B;
     }
+
+    .button-aprobar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.375rem 0.75rem;
+        background-color: #6C9A8B;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.75rem;
+        border-radius: 0.75rem;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
+        cursor: pointer;
+        border: none;
+    }
+    .button-aprobar:hover {
+        background-color: #588274;
+    }
+
+    .button-rechazar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.375rem 0.75rem;
+        background-color: #D96C6C;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.75rem;
+        border-radius: 0.75rem;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
+        cursor: pointer;
+        border: none;
+    }
+    .button-rechazar:hover {
+        background-color: #c25858;
+    }
 </style>
 
 <x-app-layout>
@@ -118,6 +154,24 @@
                     </a>
                 </div>
             </div>
+
+            @if (session('success'))
+                <div class="p-4 text-sm text-emerald-800 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center shadow-xs" role="alert">
+                    <svg class="w-5 h-5 mr-2 text-emerald-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="font-semibold">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if (session('error'))
+                <div class="p-4 text-sm text-rose-800 rounded-2xl bg-rose-50 border border-rose-200 flex items-center shadow-xs" role="alert">
+                    <svg class="w-5 h-5 mr-2 text-rose-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-9v4a1 1 0 102 0V9a1 1 0 10-2 0zm0-4a1 1 0 102 0 1 1 0 00-2 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="font-semibold">{{ session('error') }}</span>
+                </div>
+            @endif
 
             <!-- TOOLBAR: FILTROS -->
             <form method="GET" action="{{ route('incidencias.index') }}" class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
@@ -207,6 +261,7 @@
                                 <th class="py-4 px-6">Prioridad</th>
                                 <th class="py-4 px-6">Cuidador</th>
                                 <th class="py-4 px-6">Estado</th>
+                                <th class="py-4 px-6 text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 text-sm">
@@ -259,6 +314,36 @@
                                             <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
                                             {{ ucfirst($incidencia->estado) }}
                                         </span>
+                                    </td>
+                                    <td class="py-4 px-6 text-center whitespace-nowrap">
+                                        @if(strtolower($incidencia->estado) === 'pendiente')
+                                            <div class="flex items-center justify-center gap-2">
+                                                <form method="POST" action="{{ route('incidencias.update-status', $incidencia->id) }}" class="inline">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="estado" value="Aprobada">
+                                                    <button type="submit" class="button-aprobar">
+                                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                        </svg>
+                                                        Aprobar
+                                                    </button>
+                                                </form>
+                                                <form method="POST" action="{{ route('incidencias.update-status', $incidencia->id) }}" class="inline">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <input type="hidden" name="estado" value="Rechazada">
+                                                    <button type="submit" class="button-rechazar">
+                                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                        </svg>
+                                                        Rechazar
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @else
+                                            <span class="text-xs font-medium text-slate-400 italic">Sin acciones</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty

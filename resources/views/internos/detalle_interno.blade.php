@@ -252,10 +252,183 @@
 
                     <!-- MEDICIONES -->
                     <div x-show="tab === 'mediciones'" x-cloak>
-                        <h2 class="text-lg font-bold text-[#0C3B5E] mb-5">Mediciones</h2>
-                        <div class="rounded-xl border border-slate-200 min-h-[120px] flex items-center justify-center text-sm text-slate-400">
-                            Registro de signos vitales / IoT (pendiente de conectar)
+                        <div class="flex items-center justify-between mb-5">
+                            <div>
+                                <h2 class="text-lg font-bold text-[#0C3B5E]">Mediciones y Signos Vitales</h2>
+                                <p class="text-xs text-slate-500 mt-0.5">Lecturas obtenidas desde la base de datos y sensores de la tabla mediciones</p>
+                            </div>
+                            <span class="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                                {{ $resident->vitalSigns ? $resident->vitalSigns->count() : 0 }} Registro(s)
+                            </span>
                         </div>
+
+                        @if($resident->vitalSigns && $resident->vitalSigns->count() > 0)
+                            @php
+                                $ultima = $resident->vitalSigns->first();
+                            @endphp
+
+                            <!-- TARJETAS CON LA ÚLTIMA LECTURA REGISTRADA -->
+                            <div class="mb-6">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Última lectura registrada</h3>
+                                    <span class="text-xs text-slate-500 font-medium">
+                                        {{ $ultima->created_at ? $ultima->created_at->format('d/m/Y H:i') : 'Reciente' }}
+                                    </span>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                                    <!-- Frecuencia Cardíaca -->
+                                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col justify-between">
+                                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                                            <span class="text-xs font-bold text-slate-600">Frecuencia</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xl font-extrabold text-[#0C3B5E]">
+                                                {{ $ultima->frecuencia_cardiaca ?? '--' }}
+                                                <span class="text-xs font-normal text-slate-500">bpm</span>
+                                            </div>
+                                            <span class="text-[10px] text-slate-400 block mt-1">Ritmo cardíaco</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Presión Arterial -->
+                                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col justify-between">
+                                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                                            <span class="text-xs font-bold text-slate-600">Presión</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xl font-extrabold text-[#0C3B5E]">
+                                                {{ $ultima->presion_arterial ?? '--' }}
+                                            </div>
+                                            <span class="text-[10px] text-slate-400 block mt-1">mmHg</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- SpO2 -->
+                                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col justify-between">
+                                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                                            <span class="text-xs font-bold text-slate-600">Oxígeno</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xl font-extrabold text-[#0C3B5E]">
+                                                {{ $ultima->saturacion_oxigeno ? $ultima->saturacion_oxigeno . '%' : '--' }}
+                                            </div>
+                                            <span class="text-[10px] text-slate-400 block mt-1">Saturación SpO2</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Temperatura -->
+                                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col justify-between">
+                                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                                            <span class="text-xs font-bold text-slate-600">Temperatura</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xl font-extrabold text-[#0C3B5E]">
+                                                {{ $ultima->temperatura ? $ultima->temperatura . '°C' : '--' }}
+                                            </div>
+                                            <span class="text-[10px] text-slate-400 block mt-1">Corporal</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Glucosa -->
+                                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col justify-between">
+                                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                                            <span class="text-xs font-bold text-slate-600">Glucosa</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xl font-extrabold text-[#0C3B5E]">
+                                                {{ $ultima->glucosa ? $ultima->glucosa : '--' }}
+                                                <span class="text-xs font-normal text-slate-500">mg/dL</span>
+                                            </div>
+                                            <span class="text-[10px] text-slate-400 block mt-1">Nivel en sangre</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Calidad de Aire / Sensor -->
+                                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col justify-between">
+                                        <div class="flex items-center justify-between text-slate-400 mb-2">
+                                            <span class="text-xs font-bold text-slate-600">Aire / Sensor</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-lg font-bold text-[#0C3B5E] truncate">
+                                                {{ $ultima->calidad_aire ? $ultima->calidad_aire . ' AQI' : ($ultima->dispositivo_id ?? 'IoT') }}
+                                            </div>
+                                            <span class="text-[10px] text-slate-400 block mt-1 truncate" title="{{ $ultima->dispositivo_id }}">
+                                                Disp: {{ $ultima->dispositivo_id ?? 'N/A' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TABLA HISTÓRICA DE MEDICIONES -->
+                            <div class="overflow-x-auto rounded-2xl border border-slate-200 shadow-xs">
+                                <table class="w-full text-left border-collapse text-sm">
+                                    <thead>
+                                        <tr class="bg-slate-50 border-b border-slate-200 text-xs uppercase font-bold text-slate-500 tracking-wider">
+                                            <th class="py-3.5 px-4">Fecha y Hora</th>
+                                            <th class="py-3.5 px-4">Dispositivo</th>
+                                            <th class="py-3.5 px-4">Frecuencia Cardíaca</th>
+                                            <th class="py-3.5 px-4">Presión Arterial</th>
+                                            <th class="py-3.5 px-4">SpO2 (Oxígeno)</th>
+                                            <th class="py-3.5 px-4">Temperatura</th>
+                                            <th class="py-3.5 px-4">Glucosa</th>
+                                            <th class="py-3.5 px-4">Aire (AQI)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 bg-white">
+                                        @foreach($resident->vitalSigns as $medicion)
+                                            <tr class="hover:bg-slate-50/70 transition duration-150">
+                                                <td class="py-3.5 px-4 text-xs font-semibold text-slate-700 whitespace-nowrap">
+                                                    {{ $medicion->created_at ? $medicion->created_at->format('d/m/Y H:i') : '-' }}
+                                                </td>
+                                                <td class="py-3.5 px-4 text-xs text-slate-600 font-mono">
+                                                    {{ $medicion->dispositivo_id ?? 'IoT Sensor' }}
+                                                </td>
+                                                <td class="py-3.5 px-4 text-slate-800 font-medium">
+                                                    {{ $medicion->frecuencia_cardiaca ? $medicion->frecuencia_cardiaca . ' bpm' : '-' }}
+                                                </td>
+                                                <td class="py-3.5 px-4 text-slate-800 font-medium">
+                                                    {{ $medicion->presion_arterial ?? '-' }}
+                                                </td>
+                                                <td class="py-3.5 px-4">
+                                                    @if($medicion->saturacion_oxigeno)
+                                                        @php
+                                                            $spo2Class = $medicion->saturacion_oxigeno >= 95 
+                                                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                                                                : ($medicion->saturacion_oxigeno >= 90 
+                                                                    ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                                                                    : 'bg-rose-50 text-rose-700 border-rose-200');
+                                                        @endphp
+                                                        <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border {{ $spo2Class }}">
+                                                            {{ $medicion->saturacion_oxigeno }}%
+                                                        </span>
+                                                    @else
+                                                        <span class="text-slate-400 text-xs">-</span>
+                                                    @endif
+                                                </td>
+                                                <td class="py-3.5 px-4 text-slate-800 font-medium">
+                                                    {{ $medicion->temperatura ? $medicion->temperatura . ' °C' : '-' }}
+                                                </td>
+                                                <td class="py-3.5 px-4 text-slate-800 font-medium">
+                                                    {{ $medicion->glucosa ? $medicion->glucosa . ' mg/dL' : '-' }}
+                                                </td>
+                                                <td class="py-3.5 px-4 text-slate-600 text-xs">
+                                                    {{ $medicion->calidad_aire ? $medicion->calidad_aire . ' AQI' : '-' }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-400 text-sm font-medium">
+                                <svg class="w-12 h-12 mx-auto text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                <p class="font-semibold text-slate-600">No se han registrado mediciones para este interno.</p>
+                                <p class="text-xs text-slate-400 mt-1">Las lecturas tomadas por los dispositivos IoT de la tabla mediciones aparecerán reflejadas aquí automáticamente.</p>
+                            </div>
+                        @endif
                     </div>
 
                     <!-- ALERTAS -->
