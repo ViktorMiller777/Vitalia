@@ -16,6 +16,7 @@ class StoreIncidentRequest extends ApiFormRequest
             'tipo_incidencia' => ['required', 'string', 'max:30'],
             'descripcion' => ['required', 'string'],
             'prioridad' => ['sometimes', 'string'],
+            'fecha_hora' => ['sometimes', 'date'], // ← AGREGAR VALIDACIÓN
         ];
     }
 
@@ -34,5 +35,14 @@ class StoreIncidentRequest extends ApiFormRequest
     public function prioridad(): string
     {
         return $this->input('prioridad', 'Media');
+    }
+
+    public function fechaHora(): \Carbon\Carbon
+    {
+        if ($this->filled('fecha_hora')) {
+            return \Carbon\Carbon::parse($this->input('fecha_hora'));
+        }
+        
+        return now();
     }
 }

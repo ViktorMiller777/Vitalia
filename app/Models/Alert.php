@@ -19,6 +19,7 @@ class Alert extends Model
         'descripcion',
         'origen',
         'estado',
+        'created_at',
     ];
 
     public function resident(): BelongsTo

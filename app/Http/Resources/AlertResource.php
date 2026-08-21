@@ -20,6 +20,7 @@ class AlertResource extends JsonResource
             'descripcion' => $this->descripcion,
             'origen' => $this->origen,
             'estado' => $this->estado,
+            'created_at' => $this->created_at?->toISOString(),
         ];
     }
 }
